@@ -1103,8 +1103,10 @@ window.maybeClose=function(e,id){ if(e.target.id===id) closeOv(id); };
 window.closeOv=function(id){ document.getElementById(id).classList.remove('show'); };
 
 // ── INIT ──
+var urlCode = new URLSearchParams(window.location.search).get('code');
 var saved=localStorage.getItem('hsec_last_room');
-if(saved){ document.getElementById('roomInput').value=saved; roomCode=saved; enterApp(); }
+var autoCode = urlCode || saved;
+if(autoCode){ document.getElementById('roomInput').value=autoCode; roomCode=autoCode; localStorage.setItem('hsec_last_room',autoCode); enterApp(); }
 </script>
 </body>
 </html>
