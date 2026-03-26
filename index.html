@@ -1,0 +1,1110 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="家務秘書">
+<meta name="theme-color" content="#fdf8f3">
+<title>🐧 家務秘書</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;400;500&family=Zen+Kaku+Gothic+New:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+:root{
+  --milk:#fdf8f3;--cream:#f5ece0;--latte:#e8d5bc;--caramel:#c9a97a;
+  --brown:#8b6343;--deep:#5c3d1e;--text:#3d2b1a;--muted:#a08060;
+  --white:#fffefb;--shadow:rgba(139,99,67,.14);
+  --gs:#8aba88;--gb:#eaf6e8;--rs:#d08888;--rb:#fceaea;
+  --ys:#c8a050;--yb:#fdf5e0;--bs:#7a9fc0;--bb:#eaf3fb;
+  --ps:#a888c8;--pb:#f2eefb;
+  --r:14px;--rsm:10px;--rlg:22px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+html{scroll-behavior:smooth;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--milk);color:var(--text);min-height:100vh;padding-bottom:88px;overflow-x:hidden;}
+body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 8%,rgba(201,169,122,.08),transparent 50%),radial-gradient(ellipse at 85% 92%,rgba(139,99,67,.05),transparent 50%);pointer-events:none;z-index:0;}
+
+/* ═══ LOGIN ═══ */
+#loginScreen{position:fixed;inset:0;background:var(--milk);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;}
+.login-box{background:var(--white);border-radius:var(--rlg);padding:34px 28px;width:100%;max-width:380px;box-shadow:0 8px 40px var(--shadow);text-align:center;}
+.penguin-login{font-size:60px;display:block;margin-bottom:6px;animation:waddle 2s ease-in-out infinite;}
+@keyframes waddle{0%,100%{transform:rotate(-5deg) translateY(0);}25%{transform:rotate(5deg) translateY(-3px);}75%{transform:rotate(-3deg) translateY(-2px);}}
+.login-title{font-family:'Noto Serif TC',serif;font-size:23px;color:var(--deep);font-weight:500;margin-bottom:2px;}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:26px;line-height:1.75;}
+.login-label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.5px;text-align:left;display:block;margin-bottom:6px;text-transform:uppercase;}
+.login-in{width:100%;padding:13px 16px;border:1.5px solid var(--latte);border-radius:var(--r);background:var(--cream);font-family:'Zen Kaku Gothic New',sans-serif;font-size:20px;color:var(--text);outline:none;text-align:center;letter-spacing:5px;font-weight:700;margin-bottom:14px;transition:border-color .2s,background .2s;}
+.login-in:focus{border-color:var(--caramel);background:var(--white);}
+.login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;border:none;border-radius:var(--r);font-family:'Zen Kaku Gothic New',sans-serif;font-size:15px;font-weight:700;cursor:pointer;margin-bottom:12px;transition:opacity .15s;}
+.login-btn:active{opacity:.85;}
+.login-hint{font-size:12px;color:var(--muted);line-height:1.8;}
+.login-hint b{color:var(--brown);}
+.login-err{color:#c05050;font-size:12px;margin-bottom:8px;min-height:16px;}
+
+/* ═══ PENGUIN GREETING BAR ═══ */
+.penguin-bar{background:linear-gradient(120deg,#fffaf4,var(--cream));border-bottom:1px solid var(--latte);padding:10px 16px;display:none;align-items:center;gap:10px;}
+.penguin-bar.show{display:flex;}
+.pb-penguin{font-size:28px;flex-shrink:0;animation:bop 3s ease-in-out infinite;}
+@keyframes bop{0%,100%{transform:translateY(0);}50%{transform:translateY(-4px);}}
+.pb-speech{font-size:12px;color:var(--brown);line-height:1.6;flex:1;}
+.pb-speech b{color:var(--deep);}
+
+/* ═══ HEADER ═══ */
+#mainApp{display:none;}
+.header{background:var(--white);border-bottom:1.5px solid var(--latte);padding:13px 16px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px var(--shadow);}
+.header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+.logo{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:500;color:var(--deep);display:flex;flex-direction:column;gap:1px;}
+.logo-main{display:flex;align-items:center;gap:6px;}
+.logo-sub{font-size:10px;color:var(--muted);font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400;padding-left:2px;}
+.sync-dot{width:8px;height:8px;border-radius:50%;background:var(--gs);flex-shrink:0;animation:pulse 2s infinite;}
+.sync-dot.off{background:var(--latte);animation:none;}
+.sync-dot.err{background:var(--rs);animation:none;}
+@keyframes pulse{0%,100%{opacity:1;}50%{opacity:.4;}}
+.hdr-right{display:flex;align-items:center;gap:7px;}
+.code-pill{font-size:11px;color:var(--muted);background:var(--cream);border:1px solid var(--latte);border-radius:20px;padding:3px 10px;cursor:pointer;white-space:nowrap;}
+.icon-btn{width:36px;height:36px;border:1.5px solid var(--latte);background:var(--cream);border-radius:var(--rsm);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:16px;transition:background .12s;}
+.icon-btn:active{background:var(--latte);}
+.tabs{display:flex;overflow-x:auto;gap:0;margin:0 -16px;padding:0 6px;}
+.tabs::-webkit-scrollbar{display:none;}
+.tab{padding:10px 14px;font-size:12px;font-weight:600;color:var(--muted);cursor:pointer;white-space:nowrap;border-bottom:2.5px solid transparent;transition:all .18s;}
+.tab.active{color:var(--brown);border-bottom-color:var(--caramel);}
+
+/* ═══ CONTENT ═══ */
+.content{padding:14px 16px 80px;position:relative;z-index:1;}
+.page{display:none;}
+.page.active{display:block;}
+
+/* ═══ STAT GRID ═══ */
+.stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;}
+.stat-card{background:var(--white);border:1px solid var(--latte);border-radius:var(--r);padding:14px 15px;}
+.stat-lbl{font-size:11px;color:var(--muted);font-weight:600;margin-bottom:5px;}
+.stat-val{font-size:22px;font-weight:700;color:var(--deep);font-family:'Noto Serif TC',serif;line-height:1.1;}
+.stat-val small{font-size:12px;font-weight:400;color:var(--muted);font-family:'Zen Kaku Gothic New',sans-serif;}
+.stat-sub{font-size:11px;color:var(--muted);margin-top:3px;}
+
+/* ═══ SECTION HEADERS ═══ */
+.sec-hd{display:flex;align-items:center;justify-content:space-between;margin:16px 0 9px;}
+.sec-title{font-size:12px;font-weight:700;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;display:flex;align-items:center;gap:5px;}
+.sec-title::before{content:'';display:block;width:3px;height:12px;background:var(--caramel);border-radius:2px;}
+.sec-more{font-size:12px;color:var(--brown);background:none;border:none;cursor:pointer;font-family:'Zen Kaku Gothic New',sans-serif;}
+
+/* ═══ ITEM CARDS ═══ */
+.item-list{display:flex;flex-direction:column;gap:8px;margin-bottom:4px;}
+.item-card{background:var(--white);border:1px solid var(--latte);border-radius:var(--r);padding:13px 14px;display:flex;align-items:center;gap:11px;cursor:pointer;position:relative;overflow:hidden;transition:transform .12s,box-shadow .12s;}
+.item-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;}
+.item-card.st-active::before,.item-card.st-ok::before{background:var(--gs);}
+.item-card.st-cancel::before,.item-card.st-overdue::before{background:var(--rs);}
+.item-card.st-pause::before,.item-card.st-soon::before{background:var(--ys);}
+.item-card:active{transform:scale(.985);}
+.item-icon{width:40px;height:40px;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;}
+.item-info{flex:1;min-width:0;}
+.item-name{font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.item-meta{font-size:11px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.item-right{text-align:right;flex-shrink:0;}
+.item-price{font-size:15px;font-weight:700;color:var(--deep);}
+.item-cycle{font-size:10px;color:var(--muted);}
+.item-next{font-size:12px;font-weight:600;color:var(--deep);}
+.item-interval{font-size:10px;color:var(--muted);}
+.prog-track{height:4px;background:var(--cream);border-radius:2px;margin-top:6px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:2px;transition:width .6s ease;}
+
+/* ═══ BADGES ═══ */
+.badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
+.bdg-red{background:var(--rb);color:var(--rs);}
+.bdg-green{background:var(--gb);color:#4a8848;}
+.bdg-yellow{background:var(--yb);color:var(--ys);}
+.bdg-blue{background:var(--bb);color:var(--bs);}
+.bdg-purple{background:var(--pb);color:var(--ps);}
+.bdg-brown{background:var(--cream);color:var(--brown);}
+/* type badges */
+.tbdg-sub{background:#e8f0fb;color:#5878b0;}
+.tbdg-bill{background:#fbeae8;color:#b06858;}
+.tbdg-maint{background:var(--pb);color:var(--ps);}
+/* cat badges */
+.cat-streaming{background:#fceef0;color:#b07070;}
+.cat-productivity{background:var(--bb);color:#608ab8;}
+.cat-insurance{background:var(--gb);color:#4a8848;}
+.cat-telecom{background:var(--yb);color:#a08040;}
+.cat-home{background:var(--pb);color:#9070b8;}
+.cat-other{background:var(--cream);color:var(--brown);}
+.cat-health{background:var(--gb);color:#4a8848;}
+.cat-credit{background:#fbeae8;color:#b06858;}
+.cat-utility{background:var(--yb);color:#a08040;}
+.cat-rent{background:var(--pb);color:#9070b8;}
+.cat-tax{background:#fceef0;color:#b07070;}
+
+/* ═══ STATUS DIVIDERS ═══ */
+.st-hd{display:flex;align-items:center;gap:7px;margin:16px 0 8px;font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+.st-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+
+/* ═══ CHARTS ═══ */
+.chart-card{background:var(--white);border:1px solid var(--latte);border-radius:var(--r);padding:16px;margin-bottom:12px;}
+.chart-title{font-size:13px;font-weight:700;color:var(--text);margin-bottom:14px;}
+.chart-wrap{position:relative;height:210px;}
+.chart-total{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;}
+.chart-total-val{font-family:'Noto Serif TC',serif;font-size:20px;font-weight:500;color:var(--deep);}
+.chart-total-lbl{font-size:10px;color:var(--muted);margin-top:1px;}
+.legend{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:12px;}
+.leg-item{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--muted);}
+.leg-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.bar-list{display:flex;flex-direction:column;gap:9px;}
+.bar-row{display:flex;align-items:center;gap:10px;}
+.bar-lbl{font-size:11px;color:var(--text);min-width:90px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.bar-track{flex:1;height:7px;background:var(--cream);border-radius:4px;overflow:hidden;}
+.bar-fill{height:100%;border-radius:4px;transition:width .7s ease;}
+.bar-val{font-size:11px;color:var(--muted);min-width:44px;text-align:right;}
+
+/* ═══ CALENDAR ═══ */
+.cal-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.cal-mo{font-size:16px;font-weight:700;color:var(--deep);font-family:'Noto Serif TC',serif;}
+.cal-nav{width:30px;height:30px;border-radius:8px;background:var(--cream);border:1px solid var(--latte);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:15px;color:var(--muted);}
+.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;}
+.cal-dow{font-size:10px;text-align:center;color:var(--muted);padding:4px 0;font-weight:600;}
+.cal-day{aspect-ratio:1;display:flex;flex-direction:column;align-items:center;justify-content:center;border-radius:8px;font-size:12px;color:var(--muted);gap:2px;}
+.cal-day.today{background:var(--caramel);color:white;font-weight:700;}
+.cal-day.has-ev{color:var(--text);font-weight:600;}
+.ev-dot{width:4px;height:4px;border-radius:50%;}
+.ev-list-cal{margin-top:12px;display:flex;flex-direction:column;gap:8px;}
+.ev-item{background:var(--cream);border:1px solid var(--latte);border-radius:var(--rsm);padding:10px 13px;display:flex;align-items:center;gap:10px;cursor:pointer;}
+.ev-date{font-size:12px;font-weight:700;color:var(--brown);min-width:28px;text-align:center;}
+.ev-bar{width:8px;height:8px;border-radius:50%;flex-shrink:0;}
+.ev-info{flex:1;}
+.ev-name{font-size:13px;font-weight:600;color:var(--text);}
+.ev-sub-txt{font-size:11px;color:var(--muted);margin-top:1px;}
+.ev-price{font-size:13px;font-weight:700;color:var(--deep);}
+
+/* ═══ REMINDERS ═══ */
+.rem-card{background:var(--white);border:1px solid var(--latte);border-radius:var(--r);padding:13px 14px;margin-bottom:10px;display:flex;align-items:center;gap:12px;}
+.rem-icon{font-size:24px;flex-shrink:0;}
+.rem-info{flex:1;}
+.rem-name{font-size:14px;font-weight:700;color:var(--text);}
+.rem-due{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.ics-card{background:linear-gradient(120deg,#fffaf4,var(--cream));border:1px solid var(--latte);border-radius:var(--r);padding:16px;margin-bottom:14px;}
+.ics-title{font-size:14px;font-weight:700;color:var(--deep);margin-bottom:5px;}
+.ics-desc{font-size:12px;color:var(--muted);line-height:1.75;margin-bottom:12px;}
+.ics-btn{width:100%;padding:12px;background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;border:none;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;font-weight:700;cursor:pointer;}
+.rem-section-hd{display:flex;align-items:center;gap:7px;margin:16px 0 9px;font-size:12px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.4px;}
+.rem-section-hd::before{content:'';display:block;width:3px;height:12px;background:var(--caramel);border-radius:2px;}
+
+/* ═══ MODALS ═══ */
+.overlay{position:fixed;inset:0;background:rgba(61,43,26,.42);z-index:200;display:none;align-items:flex-end;backdrop-filter:blur(3px);}
+.overlay.show{display:flex;}
+.modal{background:var(--white);border-radius:22px 22px 0 0;padding:20px 18px 44px;width:100%;max-height:90vh;overflow-y:auto;}
+.modal-handle{width:36px;height:4px;background:var(--latte);border-radius:2px;margin:0 auto 18px;}
+.modal-title{font-family:'Noto Serif TC',serif;font-size:17px;color:var(--deep);margin-bottom:18px;}
+.field{margin-bottom:13px;}
+.field label{font-size:11px;color:var(--muted);font-weight:600;letter-spacing:.3px;display:block;margin-bottom:5px;text-transform:uppercase;}
+.field input,.field select{width:100%;padding:11px 13px;background:var(--cream);border:1.5px solid var(--latte);border-radius:var(--rsm);color:var(--text);font-family:'Zen Kaku Gothic New',sans-serif;font-size:13px;outline:none;transition:border-color .2s;}
+.field input:focus,.field select:focus{border-color:var(--caramel);background:var(--white);}
+.field select option{background:var(--white);}
+.field-2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.emoji-row{display:grid;grid-template-columns:repeat(8,1fr);gap:5px;margin-bottom:2px;}
+.ep{width:36px;height:36px;border-radius:8px;background:var(--cream);border:1.5px solid transparent;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:all .12s;}
+.ep.sel{border-color:var(--caramel);background:var(--yb);}
+.type-toggle{display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-bottom:14px;}
+.type-btn{padding:10px 4px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:12px;font-weight:700;cursor:pointer;border:1.5px solid var(--latte);background:var(--cream);color:var(--muted);text-align:center;transition:all .15s;}
+.type-btn.sel{background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;border-color:transparent;}
+.mbtn-row{display:flex;gap:8px;margin-top:16px;}
+.mbtn{flex:1;padding:12px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;}
+.mbtn-c{background:var(--cream);color:var(--muted);}
+.mbtn-s{background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;}
+.mbtn-d{background:var(--rb);color:var(--rs);}
+
+/* ═══ DETAIL MODAL ═══ */
+.det-head{display:flex;align-items:center;gap:13px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--latte);}
+.det-icon{width:50px;height:50px;border-radius:13px;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
+.det-name{font-size:17px;font-weight:700;color:var(--text);}
+.det-cat{font-size:12px;color:var(--muted);margin-top:3px;display:flex;align-items:center;gap:5px;flex-wrap:wrap;}
+.st-pick-row{display:flex;gap:6px;margin-bottom:14px;}
+.st-pick{flex:1;padding:9px 4px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:11px;font-weight:700;cursor:pointer;border:1.5px solid var(--latte);background:var(--cream);color:var(--muted);text-align:center;transition:all .15s;}
+.st-pick.cur-active{background:var(--gb);color:#4a8848;border-color:var(--gs);}
+.st-pick.cur-cancel{background:var(--rb);color:var(--rs);border-color:var(--rs);}
+.st-pick.cur-pause{background:var(--yb);color:var(--ys);border-color:var(--ys);}
+.det-rows{display:flex;flex-direction:column;}
+.det-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--cream);}
+.det-row:last-child{border-bottom:none;}
+.det-k{font-size:12px;color:var(--muted);}
+.det-v{font-size:13px;font-weight:600;color:var(--text);}
+.done-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gs),#5aa050);color:white;border:none;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;}
+
+/* ═══ EMPTY ═══ */
+.empty{text-align:center;padding:28px 20px;color:var(--muted);}
+.empty-icon{font-size:34px;display:block;margin-bottom:8px;}
+
+/* ═══ PENGUIN TOAST SYSTEM ═══ */
+.toast-wrap{position:fixed;bottom:100px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:500;}
+.toast-item{
+  display:flex;align-items:center;gap:8px;
+  background:var(--white);border:1px solid var(--latte);
+  color:var(--text);font-size:13px;padding:10px 16px 10px 12px;
+  border-radius:24px;box-shadow:0 4px 20px var(--shadow);
+  opacity:0;transform:translateY(16px) scale(.95);
+  transition:all .28s cubic-bezier(.34,1.56,.64,1);
+  pointer-events:none;max-width:calc(100vw - 40px);
+}
+.toast-item.show{opacity:1;transform:translateY(0) scale(1);}
+.toast-item.removing{opacity:0;transform:translateY(-8px) scale(.95);transition:all .2s ease-in;}
+.toast-penguin{font-size:18px;flex-shrink:0;}
+.toast-msg{line-height:1.4;}
+.toast-item.type-success{border-color:var(--gs);background:var(--gb);}
+.toast-item.type-success .toast-msg{color:#3a7038;}
+.toast-item.type-error{border-color:var(--rs);background:var(--rb);}
+.toast-item.type-error .toast-msg{color:#a05050;}
+.toast-item.type-warning{border-color:var(--ys);background:var(--yb);}
+.toast-item.type-warning .toast-msg{color:#806030;}
+.toast-item.type-info{border-color:var(--bs);background:var(--bb);}
+.toast-item.type-info .toast-msg{color:#4070a0;}
+.toast-item.type-sync{border-color:var(--ps);background:var(--pb);}
+.toast-item.type-sync .toast-msg{color:#7050a0;}
+
+/* ═══ ANIMATIONS ═══ */
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
+.page.active .stat-card{animation:fadeUp .3s ease both;}
+.page.active .chart-card{animation:fadeUp .3s ease both;}
+.page.active .item-card:nth-child(1){animation:fadeUp .22s ease both;}
+.page.active .item-card:nth-child(2){animation:fadeUp .28s ease both;}
+.page.active .item-card:nth-child(3){animation:fadeUp .34s ease both;}
+.page.active .item-card:nth-child(4){animation:fadeUp .4s ease both;}
+.page.active .item-card:nth-child(5){animation:fadeUp .46s ease both;}
+.page.active .rem-card{animation:fadeUp .3s ease both;}
+</style>
+</head>
+<body>
+
+<!-- ═══ LOGIN ═══ -->
+<div id="loginScreen">
+  <div class="login-box">
+    <span class="penguin-login">🐧</span>
+    <div class="login-title">家務秘書</div>
+    <div class="login-sub">訂閱與帳單管理小幫手<br>輸入家庭代號，企鵝寶寶幫你管好一切 🏡</div>
+    <label class="login-label">家庭代號</label>
+    <input class="login-in" id="roomInput" placeholder="例：myfamily" maxlength="20"
+      onkeydown="if(event.key==='Enter')doLogin()">
+    <div class="login-err" id="loginErr"></div>
+    <button class="login-btn" onclick="doLogin()">讓企鵝寶寶開始工作 →</button>
+    <div class="login-hint">
+      兩個人輸入<b>相同代號</b>，不同裝置即時同步<br>
+      代號不分大小寫 🐾
+    </div>
+  </div>
+</div>
+
+<!-- ═══ MAIN APP ═══ -->
+<div id="mainApp">
+
+  <div class="penguin-bar" id="penguinBar">
+    <span class="pb-penguin">🐧</span>
+    <span class="pb-speech" id="penguinSpeech">主人早安！企鵝寶寶已準備好，今天也交給我來管理吧！</span>
+  </div>
+
+  <div class="header">
+    <div class="header-row">
+      <div class="logo">
+        <div class="logo-main">
+          <span class="sync-dot" id="syncDot"></span>
+          🐧 家務秘書
+        </div>
+        <div class="logo-sub">訂閱與帳單管理小幫手</div>
+      </div>
+      <div class="hdr-right">
+        <span class="code-pill" id="codePill" onclick="copyCode()"></span>
+        <div class="icon-btn" onclick="openAdd()">＋</div>
+      </div>
+    </div>
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('overview',this)">📊 總覽</div>
+      <div class="tab"        onclick="switchTab('subs',this)">💳 訂閱</div>
+      <div class="tab"        onclick="switchTab('bills',this)">🧾 繳費</div>
+      <div class="tab"        onclick="switchTab('maint',this)">🔧 汰換</div>
+      <div class="tab"        onclick="switchTab('calendar',this)">📅 日曆</div>
+      <div class="tab"        onclick="switchTab('charts',this)">📈 圖表</div>
+      <div class="tab"        onclick="switchTab('reminders',this)">🔔 提醒</div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- ── 總覽 ── -->
+    <div class="page active" id="page-overview">
+      <div class="stat-grid">
+        <div class="stat-card">
+          <div class="stat-lbl">💳 每月訂閱</div>
+          <div class="stat-val" id="ov-sub">$0<small>/月</small></div>
+          <div class="stat-sub" id="ov-sub-cnt">0 個訂閱中</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">🧾 每月繳費</div>
+          <div class="stat-val" id="ov-bill">$0<small>/月</small></div>
+          <div class="stat-sub" id="ov-bill-cnt">0 項繳費</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">⚡ 7天內到期</div>
+          <div class="stat-val" id="ov-due" style="color:var(--rs)">0<small>項</small></div>
+          <div class="stat-sub">訂閱 + 繳費 + 汰換</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-lbl">🔧 待汰換</div>
+          <div class="stat-val" id="ov-maint" style="color:var(--ys)">0<small>項</small></div>
+          <div class="stat-sub" id="ov-maint-sub">定期追蹤</div>
+        </div>
+      </div>
+      <div class="sec-hd"><div class="sec-title">即將到期</div></div>
+      <div class="item-list" id="ov-due-list"></div>
+      <div class="sec-hd">
+        <div class="sec-title">本月訂閱</div>
+        <button class="sec-more" onclick="switchTab('subs',document.querySelectorAll('.tab')[1])">全部 →</button>
+      </div>
+      <div class="item-list" id="ov-sub-list"></div>
+      <div class="sec-hd">
+        <div class="sec-title">本月繳費</div>
+        <button class="sec-more" onclick="switchTab('bills',document.querySelectorAll('.tab')[2])">全部 →</button>
+      </div>
+      <div class="item-list" id="ov-bill-list"></div>
+    </div>
+
+    <!-- ── 訂閱 ── -->
+    <div class="page" id="page-subs">
+      <div class="st-hd"><div class="st-dot" style="background:var(--gs)"></div>訂閱中</div>
+      <div class="item-list" id="list-active"></div>
+      <div class="st-hd"><div class="st-dot" style="background:var(--rs)"></div>準備取消</div>
+      <div class="item-list" id="list-cancel"></div>
+      <div class="st-hd"><div class="st-dot" style="background:var(--ys)"></div>暫停中</div>
+      <div class="item-list" id="list-pause"></div>
+    </div>
+
+    <!-- ── 繳費 ── -->
+    <div class="page" id="page-bills">
+      <div class="sec-hd"><div class="sec-title">所有繳費項目</div></div>
+      <div class="item-list" id="list-bills"></div>
+    </div>
+
+    <!-- ── 汰換 ── -->
+    <div class="page" id="page-maint">
+      <div class="sec-hd"><div class="sec-title">所有定期追蹤</div></div>
+      <div class="item-list" id="list-maint"></div>
+    </div>
+
+    <!-- ── 日曆 ── -->
+    <div class="page" id="page-calendar">
+      <div class="chart-card">
+        <div class="cal-hd">
+          <button class="cal-nav" onclick="shiftMo(-1)">‹</button>
+          <div class="cal-mo" id="calTitle"></div>
+          <button class="cal-nav" onclick="shiftMo(1)">›</button>
+        </div>
+        <div class="cal-grid" style="margin-bottom:4px;">
+          <div class="cal-dow">日</div><div class="cal-dow">一</div><div class="cal-dow">二</div>
+          <div class="cal-dow">三</div><div class="cal-dow">四</div><div class="cal-dow">五</div><div class="cal-dow">六</div>
+        </div>
+        <div class="cal-grid" id="calDays"></div>
+      </div>
+      <div class="ev-list-cal" id="evList"></div>
+    </div>
+
+    <!-- ── 圖表 ── -->
+    <div class="page" id="page-charts">
+      <div class="chart-card">
+        <div class="chart-title">🍩 每月支出分類（訂閱）</div>
+        <div class="chart-wrap">
+          <canvas id="pieChart"></canvas>
+          <div class="chart-total">
+            <div class="chart-total-val" id="pieTotal">$0</div>
+            <div class="chart-total-lbl">訂閱月費</div>
+          </div>
+        </div>
+        <div class="legend" id="pieLeg"></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">📊 各項金額排行</div>
+        <div class="bar-list" id="barList"></div>
+      </div>
+    </div>
+
+    <!-- ── 提醒 ── -->
+    <div class="page" id="page-reminders">
+      <div class="ics-card">
+        <div class="ics-title">📅 匯出行事曆</div>
+        <div class="ics-desc">
+          將所有繳費日 + 汰換日一鍵下載 .ics 行事曆檔案，<br>
+          匯入 Google Calendar 或 Apple 行事曆，提前 3 天自動通知 🔔
+        </div>
+        <button class="ics-btn" onclick="exportICS()">📥 下載 .ics 行事曆</button>
+      </div>
+      <div class="rem-section-hd">💳 訂閱到期提醒</div>
+      <div id="rem-sub-list"></div>
+      <div class="rem-section-hd">🧾 繳費到期提醒</div>
+      <div id="rem-bill-list"></div>
+      <div class="rem-section-hd">🔧 汰換到期提醒</div>
+      <div id="rem-maint-list"></div>
+    </div>
+
+  </div>
+</div>
+
+<!-- ═══ ADD/EDIT MODAL ═══ -->
+<div class="overlay" id="addOv" onclick="maybeClose(event,'addOv')">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title" id="modalTitle">✨ 新增項目</div>
+  <div class="type-toggle" id="typeToggle">
+    <button class="type-btn sel" id="typeBtnSub"   onclick="setType('sub')">💳 訂閱</button>
+    <button class="type-btn"    id="typeBtnBill"   onclick="setType('bill')">🧾 繳費</button>
+    <button class="type-btn"    id="typeBtnMaint"  onclick="setType('maint')">🔧 汰換</button>
+  </div>
+  <div class="field"><label>圖示</label><div class="emoji-row" id="emojiRow"></div></div>
+  <div class="field"><label>名稱 *</label><input id="f-name" placeholder="例：Netflix"></div>
+
+  <!-- SUB FIELDS -->
+  <div id="sub-fields">
+    <div class="field-2">
+      <div class="field"><label>金額 (NT$)</label><input id="f-price" type="number" placeholder="0"></div>
+      <div class="field"><label>週期</label>
+        <select id="f-cycle">
+          <option value="monthly">每月</option><option value="yearly">每年</option>
+          <option value="quarterly">每季</option><option value="onetime">一次性</option>
+        </select>
+      </div>
+    </div>
+    <div class="field-2">
+      <div class="field"><label>分類</label>
+        <select id="f-cat">
+          <option value="streaming">影音串流</option><option value="productivity">生產力工具</option>
+          <option value="home">家用服務</option><option value="other">其他</option>
+        </select>
+      </div>
+      <div class="field"><label>狀態</label>
+        <select id="f-status">
+          <option value="active">訂閱中</option><option value="cancel">準備取消</option><option value="pause">暫停</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>下次繳費日</label><input id="f-due" type="date"></div>
+  </div>
+
+  <!-- BILL FIELDS -->
+  <div id="bill-fields" style="display:none;">
+    <div class="field-2">
+      <div class="field"><label>金額 (NT$)</label><input id="f-bprice" type="number" placeholder="0"></div>
+      <div class="field"><label>週期</label>
+        <select id="f-bcycle">
+          <option value="monthly">每月</option><option value="bimonthly">每兩個月</option>
+          <option value="quarterly">每季</option><option value="yearly">每年</option>
+        </select>
+      </div>
+    </div>
+    <div class="field"><label>分類</label>
+      <select id="f-bcat">
+        <option value="health">健保 / 勞保</option><option value="telecom">電話 / 網路費</option>
+        <option value="credit">信用卡費</option><option value="utility">水電費</option>
+        <option value="rent">房租 / 管理費</option><option value="tax">稅務</option>
+        <option value="other">其他</option>
+      </select>
+    </div>
+    <div class="field"><label>下次繳費日</label><input id="f-bdue" type="date"></div>
+    <div class="field"><label>繳費提醒（提前幾天）</label>
+      <select id="f-bremind">
+        <option value="3">提前 3 天</option><option value="7">提前 7 天</option>
+        <option value="14">提前 14 天</option><option value="0">當天</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- MAINT FIELDS -->
+  <div id="maint-fields" style="display:none;">
+    <div class="field-2">
+      <div class="field"><label>上次更換日</label><input id="f-last" type="date"></div>
+      <div class="field"><label>週期（天）</label><input id="f-interval" type="number" placeholder="例：90"></div>
+    </div>
+    <div class="field"><label>下次到期日（可覆蓋）</label><input id="f-mdue" type="date"></div>
+    <div class="field-2">
+      <div class="field"><label>費用（選填）</label><input id="f-mcost" type="number" placeholder="0"></div>
+      <div class="field"><label>分類</label>
+        <select id="f-mcat">
+          <option value="filter">濾芯/濾材</option><option value="battery">電池</option>
+          <option value="hygiene">衛生用品</option><option value="appliance">家電耗材</option>
+          <option value="car">汽車保養</option><option value="other">其他</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="field"><label>備註</label><input id="f-note" placeholder="備註說明…"></div>
+  <div class="mbtn-row">
+    <button class="mbtn mbtn-c" onclick="closeOv('addOv')">取消</button>
+    <button class="mbtn mbtn-d" id="delBtn" style="display:none;" onclick="doDelete()">刪除</button>
+    <button class="mbtn mbtn-s" onclick="doSave()">儲存</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ DETAIL MODAL ═══ -->
+<div class="overlay" id="detOv" onclick="maybeClose(event,'detOv')">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <div class="det-head">
+    <div class="det-icon" id="d-icon"></div>
+    <div><div class="det-name" id="d-name"></div><div class="det-cat" id="d-cat"></div></div>
+  </div>
+  <div class="st-pick-row" id="d-st-row">
+    <button class="st-pick" data-st="active" onclick="setStatus('active')">✅ 訂閱中</button>
+    <button class="st-pick" data-st="cancel" onclick="setStatus('cancel')">🚫 準備取消</button>
+    <button class="st-pick" data-st="pause"  onclick="setStatus('pause')">⏸ 暫停</button>
+  </div>
+  <button class="done-btn" id="d-done-btn" onclick="markDone()" style="display:none;">✅ 已更換！今天起重新計時</button>
+  <div class="det-rows" id="d-rows"></div>
+  <div class="mbtn-row" style="margin-top:16px;">
+    <button class="mbtn mbtn-c" onclick="closeOv('detOv')">關閉</button>
+    <button class="mbtn mbtn-d" style="flex:.6;" onclick="editFromDetail()">✏️ 編輯</button>
+  </div>
+</div>
+</div>
+
+<!-- ═══ PENGUIN TOAST CONTAINER ═══ -->
+<div class="toast-wrap" id="toastWrap"></div>
+
+<!-- ═══ FIREBASE ═══ -->
+<script type="module">
+import { initializeApp } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.0.0/firebase-firestore.js";
+const app = initializeApp({
+  apiKey:"AIzaSyAy0QKDrORa_VSecvEbeUxjMkRU4jd-QEM",
+  authDomain:"five-year-diary-d7e00.firebaseapp.com",
+  projectId:"five-year-diary-d7e00",
+  storageBucket:"five-year-diary-d7e00.firebasestorage.app",
+  messagingSenderId:"298457239349",
+  appId:"1:298457239349:web:9183353d8ad790076c867c"
+});
+const db = getFirestore(app);
+window._fbGetDoc = c => getDoc(doc(db,'home_sec_v2',c));
+window._fbSetDoc = (c,d) => setDoc(doc(db,'home_sec_v2',c),d);
+window._fbListen = (c,cb) => onSnapshot(doc(db,'home_sec_v2',c), s => { if(s.exists()) cb(s.data()); });
+window._fbReady = true;
+if(window._onFbReady) window._onFbReady();
+</script>
+
+<!-- ═══ MAIN SCRIPT ═══ -->
+<script>
+'use strict';
+
+// ── STATE ──
+var items = [];
+var roomCode = '', editId = null, viewId = null;
+var selEmoji = '💳', selType = 'sub';
+var calY = new Date().getFullYear(), calM = new Date().getMonth();
+var unsubFb = null, saveTimer = null, lastPushed = 0;
+var pieInst = null;
+
+// ── CONSTANTS ──
+var SUB_EMOJIS   = ['💳','📱','🎬','🎵','📺','🎮','☁️','🤖','📧','🔒','🌐','💼','📚','🎯','⚡','🎁','🏠','🎨','🛒','📰'];
+var BILL_EMOJIS  = ['🏥','📡','💳','💡','🏠','🧾','🚰','💰','🏦','📋','🔑','🚗','🎓','📬','🌐','⚡','🏛️','📝','🪙','💸'];
+var MAINT_EMOJIS = ['🔧','💧','🔋','🪥','🧹','🚿','🌬️','🚗','💡','🪣','🧊','🌡️','🛁','🧴','🔩','🪛','🏠','🌿','♻️','⚙️'];
+var CYCLES    = {monthly:'月',yearly:'年',quarterly:'季',onetime:'次',bimonthly:'兩月'};
+var CYC_MO    = {monthly:1,yearly:12,quarterly:3,onetime:0,bimonthly:2};
+var SUB_CATS  = {streaming:'影音串流',productivity:'生產力',home:'家用',other:'其他'};
+var BILL_CATS = {health:'健保/勞保',telecom:'電話/網路',credit:'信用卡',utility:'水電費',rent:'房租/管理費',tax:'稅務',other:'其他'};
+var MAINT_CATS= {filter:'濾芯/濾材',battery:'電池',hygiene:'衛生用品',appliance:'家電耗材',car:'汽車保養',other:'其他'};
+var CAT_COLORS= ['#c9a97a','#8aabcc','#c07878','#8aba88','#a888c8','#c8a050','#a0b890','#cc8878','#78a8c8'];
+
+// ── PENGUIN TOAST SYSTEM ──
+var PENGUIN_MSGS = {
+  add:    ['企鵝寶寶已記好了！✏️','咕嚕～已幫你存好囉！','嗯嗯！記下來了 🐧'],
+  update: ['更新完畢！企鵝寶寶點頭確認 ✅','好的好的，已經改好了！','企鵝秘書更新完成 🐧'],
+  del:    ['呼～刪掉了！企鵝寶寶整理好了 🗑️','刪除成功，記錄已消失！','咔嚓！已移除囉 🐧'],
+  sync:   ['跟家人同步完畢 ✨','收到更新了！企鵝在線 🐧','資料剛剛同步好了～'],
+  copy:   ['代號已複製！傳給家人就能共用 📋','複製成功！🐧'],
+  done:   ['太好了！企鵝寶寶幫你重設計時 ⏰','✅ 已更換！下次提醒已更新','換好了！企鵝寶寶記住新日期了 🐧'],
+  status: ['狀態更新了！企鵝確認完畢 🐧','好的，狀態已更改 ✅'],
+  warn:   ['咦？好像有什麼沒填喔！🐧','企鵝寶寶說：請填寫名稱 ✏️'],
+  ics:    ['行事曆已匯出！📅 匯入後企鵝會提醒你','下載好了！記得匯入行事曆 🗓️'],
+};
+function pRand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+
+var toastQueue = [];
+var toastActive = false;
+
+function showToast(msg, type, duration){
+  type = type||'default'; duration = duration||2800;
+  var wrap = document.getElementById('toastWrap');
+  var el = document.createElement('div');
+  el.className = 'toast-item type-'+(type==='default'?'info':type);
+  var penguinFace = type==='success'?'🐧':type==='error'?'😨':type==='warning'?'🤔':type==='sync'?'🐧':type==='info'?'🐧':'🐧';
+  el.innerHTML='<span class="toast-penguin">'+penguinFace+'</span><span class="toast-msg">'+msg+'</span>';
+  wrap.appendChild(el);
+  // limit to 3 visible
+  var all=wrap.querySelectorAll('.toast-item');
+  if(all.length>3) all[0].remove();
+  requestAnimationFrame(function(){
+    requestAnimationFrame(function(){ el.classList.add('show'); });
+  });
+  setTimeout(function(){
+    el.classList.add('removing');
+    setTimeout(function(){ if(el.parentNode) el.remove(); }, 220);
+  }, duration);
+}
+window.showToast = showToast;
+
+function toast(key){ showToast(pRand(PENGUIN_MSGS[key]||[key]), key==='warn'||key==='error'?'error':key==='done'||key==='status'||key==='update'?'success':key==='sync'?'sync':key==='del'?'warning':'info'); }
+
+// ── LOCAL STORAGE ──
+function lk(k){ return 'hsec_'+roomCode+'_'+k; }
+function loadLocal(){ try{ items=JSON.parse(localStorage.getItem(lk('items'))||'[]'); }catch(e){ items=[]; } }
+function saveLocal(){ localStorage.setItem(lk('items'),JSON.stringify(items)); }
+function payload(){ return {items:items,updatedAt:Date.now()}; }
+
+// ── FIREBASE ──
+function push(){
+  if(!roomCode||!window._fbSetDoc) return;
+  clearTimeout(saveTimer);
+  saveTimer=setTimeout(function(){ lastPushed=Date.now(); window._fbSetDoc(roomCode,payload()).catch(function(){}); },800);
+}
+function applyRemote(data){
+  if(data.updatedAt&&data.updatedAt<=lastPushed) return;
+  items=data.items||[]; saveLocal(); renderAll(); setSyncDot('on');
+}
+function setSyncDot(s){ document.getElementById('syncDot').className='sync-dot'+(s==='off'?' off':s==='err'?' err':''); }
+
+function startSync(){
+  if(unsubFb){ unsubFb(); unsubFb=null; }
+  setSyncDot('off');
+  window._fbGetDoc(roomCode).then(function(snap){
+    if(snap.exists()){ applyRemote(snap.data()); setSyncDot('on'); }
+    else{ if(!items.length) loadSample(); push(); setSyncDot('on'); }
+    renderAll();
+  }).catch(function(){ setSyncDot('err'); showToast('企鵝寶寶連線中...請稍候','warning'); });
+  unsubFb=window._fbListen(roomCode,function(data){ applyRemote(data); setSyncDot('on'); toast('sync'); });
+}
+
+// ── LOGIN ──
+function doLogin(){
+  var v=document.getElementById('roomInput').value.trim().toLowerCase().replace(/\s+/g,'');
+  var err=document.getElementById('loginErr');
+  if(!v||v.length<2){ err.textContent='代號至少 2 個字元'; return; }
+  err.textContent=''; roomCode=v;
+  localStorage.setItem('hsec_last_room',v);
+  enterApp();
+}
+window.doLogin=doLogin;
+
+function enterApp(){
+  loadLocal();
+  document.getElementById('loginScreen').style.display='none';
+  document.getElementById('mainApp').style.display='block';
+  document.getElementById('codePill').textContent='🏠 '+roomCode.toUpperCase();
+  initEmojiRow();
+  renderGreeting();
+  if(window._fbReady) startSync();
+  else window._onFbReady=function(){ startSync(); };
+  if(!items.length) loadSample();
+  renderAll();
+}
+
+function renderGreeting(){
+  var h=new Date().getHours();
+  var msgs;
+  if(h>=5&&h<11)   msgs=['早安！企鵝寶寶精神飽滿上班囉 ☀️','早安！來看看今天有什麼需要留意的？'];
+  else if(h>=11&&h<14) msgs=['午安！吃飯時順便看一下帳單吧 🍱','中午好！企鵝寶寶正在認真整理清單'];
+  else if(h>=14&&h<18) msgs=['下午好！有什麼需要更新的嗎？🐧','下午囉！企鵝寶寶隨時待命'];
+  else if(h>=18&&h<22) msgs=['晚上好！今天的帳有記清楚嗎？🌙','辛苦了！企鵝寶寶幫你管好家務'];
+  else msgs=['夜深了，企鵝寶寶還在守護你的帳單 ⭐','安靜的夜晚，企鵝寶寶陪你記帳 🌙'];
+  var dueSoon=items.filter(function(i){ var dt=i.type==='maint'?calcDue(i):i.due; return daysUntil(dt)<=3; });
+  var extra = dueSoon.length ? '另外有 <b>'+dueSoon.length+' 項</b>即將到期，記得確認喔 📋' : '';
+  var bar=document.getElementById('penguinBar');
+  document.getElementById('penguinSpeech').innerHTML=msgs[Math.floor(Math.random()*msgs.length)]+(extra?' '+extra:'');
+  bar.classList.add('show');
+}
+
+window.copyCode=function(){
+  if(navigator.clipboard) navigator.clipboard.writeText(roomCode).then(function(){ toast('copy'); });
+  else showToast('代號：'+roomCode.toUpperCase(),'info');
+};
+
+// ── SAMPLE DATA ──
+function loadSample(){
+  function nd(d){ var t=new Date(),r=new Date(t.getFullYear(),t.getMonth(),d); if(r<t)r.setMonth(r.getMonth()+1); return r.toISOString().slice(0,10); }
+  function future(days){ var t=new Date(); t.setDate(t.getDate()+days); return t.toISOString().slice(0,10); }
+  function past(days){ var t=new Date(); t.setDate(t.getDate()-days); return t.toISOString().slice(0,10); }
+  items=[
+    // subs
+    {id:'s1',type:'sub',name:'Spotify 家庭',emoji:'🎵',price:179,cycle:'monthly',cat:'streaming',status:'active',due:nd(15),note:'6人共用'},
+    {id:'s2',type:'sub',name:'Netflix',emoji:'📺',price:270,cycle:'monthly',cat:'streaming',status:'active',due:nd(20),note:''},
+    {id:'s3',type:'sub',name:'ChatGPT Plus',emoji:'🤖',price:620,cycle:'monthly',cat:'productivity',status:'active',due:nd(8),note:''},
+    {id:'s4',type:'sub',name:'iCloud 200GB',emoji:'☁️',price:30,cycle:'monthly',cat:'productivity',status:'active',due:nd(3),note:''},
+    {id:'s5',type:'sub',name:'YouTube Premium',emoji:'🎬',price:179,cycle:'monthly',cat:'streaming',status:'cancel',due:nd(18),note:'考慮取消'},
+    // bills
+    {id:'b1',type:'bill',name:'健保費',emoji:'🏥',price:1249,cycle:'monthly',bcat:'health',due:nd(25),remind:3,note:'每月自行繳納'},
+    {id:'b2',type:'bill',name:'勞保費',emoji:'🏛️',price:741,cycle:'monthly',bcat:'health',due:nd(25),remind:3,note:''},
+    {id:'b3',type:'bill',name:'中華電信',emoji:'📡',price:499,cycle:'monthly',bcat:'telecom',due:nd(10),remind:7,note:'上網+電話'},
+    {id:'b4',type:'bill',name:'信用卡費',emoji:'💳',price:8000,cycle:'monthly',bcat:'credit',due:nd(5),remind:7,note:'每月帳單'},
+    // maint
+    {id:'m1',type:'maint',name:'Brita 濾芯',emoji:'💧',mcat:'filter',lastDate:past(75),interval:90,cost:200,note:'冷水壺',due:future(15)},
+    {id:'m2',type:'maint',name:'冷氣濾網',emoji:'🌬️',mcat:'appliance',lastDate:past(20),interval:30,cost:0,note:'每月清洗',due:future(10)},
+    {id:'m3',type:'maint',name:'電動牙刷頭',emoji:'🪥',mcat:'hygiene',lastDate:past(55),interval:60,cost:80,note:'',due:future(5)},
+  ];
+  saveLocal();
+}
+
+// ── HELPERS ──
+function subs(){ return items.filter(function(i){ return i.type==='sub'; }); }
+function bills(){ return items.filter(function(i){ return i.type==='bill'; }); }
+function maints(){ return items.filter(function(i){ return i.type==='maint'; }); }
+function activeSubs(){ return subs().filter(function(s){ return s.status==='active'; }); }
+function subMo(){ return activeSubs().reduce(function(a,s){ return a+(s.price/(CYC_MO[s.cycle]||1)); },0); }
+function billMo(){ return bills().reduce(function(a,b){ return a+(b.price/(CYC_MO[b.cycle]||1)); },0); }
+function daysUntil(dt){ if(!dt)return 999; var d=new Date(dt),t=new Date(); t.setHours(0,0,0,0);d.setHours(0,0,0,0); return Math.round((d-t)/86400000); }
+function calcDue(item){ if(item.type!=='maint')return item.due; if(item.due)return item.due; if(item.lastDate&&item.interval){ var d=new Date(item.lastDate); d.setDate(d.getDate()+parseInt(item.interval)); return d.toISOString().slice(0,10); } return null; }
+function maintStatus(item){ var d=daysUntil(calcDue(item)); if(d<0)return 'overdue'; if(d<=14)return 'soon'; return 'ok'; }
+function progPct(item){ if(!item.lastDate||!item.interval)return 0; var s=new Date(item.lastDate),n=new Date(); var e=Math.round((n-s)/86400000); return Math.min(100,Math.round(e/item.interval*100)); }
+function dueBadge(dt){ var d=daysUntil(dt); if(d<0)return '<span class="badge bdg-red">逾期 '+Math.abs(d)+'天</span>'; if(d<=3)return '<span class="badge bdg-red">⚡ '+d+'天後</span>'; if(d<=7)return '<span class="badge bdg-yellow">⏰ '+d+'天後</span>'; if(d<=14)return '<span class="badge bdg-blue">'+d+'天後</span>'; return '<span class="badge bdg-brown">'+(dt?dt.slice(5):'—')+'</span>'; }
+function typBadge(item){ if(item.type==='sub')return '<span class="badge tbdg-sub">訂閱</span>'; if(item.type==='bill')return '<span class="badge tbdg-bill">繳費</span>'; return '<span class="badge tbdg-maint">汰換</span>'; }
+function catBadge(item){
+  if(item.type==='sub')   return '<span class="badge cat-'+(item.cat||'other')+'">'+(SUB_CATS[item.cat]||item.cat)+'</span>';
+  if(item.type==='bill')  return '<span class="badge cat-'+(item.bcat||'other')+'">'+(BILL_CATS[item.bcat]||item.bcat)+'</span>';
+  return '<span class="badge cat-home">'+(MAINT_CATS[item.mcat]||item.mcat)+'</span>';
+}
+function bgItem(item){
+  if(item.type==='sub'){   var m={streaming:'#fceef0',productivity:'#eaf3fb',home:'#f3eefb',other:'#f5ece0'}; return m[item.cat]||m.other; }
+  if(item.type==='bill'){  var m={health:'#eaf6e8',telecom:'#fdf5e0',credit:'#fbeae8',utility:'#fdf5e0',rent:'#f3eefb',tax:'#fceef0',other:'#f5ece0'}; return m[item.bcat]||m.other; }
+  var m={filter:'#eaf3fb',battery:'#fdf5e0',hygiene:'#eaf6e8',appliance:'#f3eefb',car:'#fceef0',other:'#f5ece0'}; return m[item.mcat]||m.other;
+}
+function stClass(item){ if(item.type==='maint')return 'st-'+maintStatus(item); if(item.type==='bill')return 'st-active'; return 'st-'+(item.status||'active'); }
+function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function pad(n){ return n<10?'0'+n:String(n); }
+function fmt(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+
+// ── RENDER ──
+function renderAll(){ renderOverview(); renderSubs(); renderBills(); renderMaint(); renderCalendar(); renderReminders(); }
+window.renderAll=renderAll;
+
+function renderOverview(){
+  var sm=subMo(), bm=billMo();
+  var act=activeSubs(), bls=bills();
+  var allDue=items.filter(function(i){ var dt=i.type==='maint'?calcDue(i):i.due; return daysUntil(dt)<=7; });
+  var maintDue=maints().filter(function(i){ return maintStatus(i)!=='ok'; });
+  document.getElementById('ov-sub').innerHTML='$'+Math.round(sm)+'<small>/月</small>';
+  document.getElementById('ov-sub-cnt').textContent=act.length+' 個訂閱中';
+  document.getElementById('ov-bill').innerHTML='$'+Math.round(bm)+'<small>/月</small>';
+  document.getElementById('ov-bill-cnt').textContent=bls.length+' 項繳費';
+  document.getElementById('ov-due').innerHTML=allDue.length+'<small>項</small>';
+  document.getElementById('ov-maint').innerHTML=maintDue.length+'<small>項</small>';
+  document.getElementById('ov-maint-sub').textContent=maints().length+' 個定期追蹤';
+  var dl=document.getElementById('ov-due-list');
+  if(!allDue.length) dl.innerHTML='<div class="empty"><span class="empty-icon">✅</span><p>近7天沒有到期項目，太棒了！</p></div>';
+  else dl.innerHTML=allDue.sort(function(a,b){ var da=a.type==='maint'?calcDue(a):a.due, db=b.type==='maint'?calcDue(b):b.due; return daysUntil(da)-daysUntil(db); }).map(itemCard).join('');
+  document.getElementById('ov-sub-list').innerHTML=act.slice(0,4).map(itemCard).join('');
+  document.getElementById('ov-bill-list').innerHTML=bls.slice(0,4).map(itemCard).join('');
+}
+
+function renderSubs(){
+  var g={active:[],cancel:[],pause:[]};
+  subs().forEach(function(s){ if(g[s.status])g[s.status].push(s); });
+  ['active','cancel','pause'].forEach(function(k){ document.getElementById('list-'+k).innerHTML=g[k].length?g[k].map(itemCard).join(''):'<div class="empty"><p>沒有項目</p></div>'; });
+}
+
+function renderBills(){
+  var bs=bills().sort(function(a,b){ return daysUntil(a.due)-daysUntil(b.due); });
+  document.getElementById('list-bills').innerHTML=bs.length?bs.map(itemCard).join(''):'<div class="empty"><span class="empty-icon">🧾</span><p>還沒有繳費項目<br>健保、電信、信用卡等都可以加進來</p></div>';
+}
+
+function renderMaint(){
+  var ms=maints().sort(function(a,b){ return daysUntil(calcDue(a))-daysUntil(calcDue(b)); });
+  document.getElementById('list-maint').innerHTML=ms.length?ms.map(itemCard).join(''):'<div class="empty"><span class="empty-icon">🔧</span><p>還沒有定期追蹤項目<br>新增「濾芯」「電池」等備品</p></div>';
+}
+
+function itemCard(item){
+  var dt = item.type==='maint'?calcDue(item):item.due;
+  var right = '';
+  if(item.type==='sub'||item.type==='bill'){
+    right='<div class="item-right"><div class="item-price">$'+((item.price||0)).toLocaleString()+'</div><div class="item-cycle">/'+(CYCLES[item.cycle]||'月')+'</div></div>';
+  } else {
+    var due=calcDue(item);
+    right='<div class="item-right"><div class="item-next">'+(due?due.slice(5):'—')+'</div><div class="item-interval">'+(item.interval?item.interval+'天/次':'')+'</div></div>';
+  }
+  var prog = item.type==='maint'?'<div class="prog-track"><div class="prog-fill" style="width:'+progPct(item)+'%;background:'+(progPct(item)>=90?'var(--rs)':progPct(item)>=70?'var(--ys)':'var(--gs)')+'"></div></div>':'';
+  return '<div class="item-card '+stClass(item)+'" onclick="openDetail(\''+item.id+'\')">'
+    +'<div class="item-icon" style="background:'+bgItem(item)+'">'+item.emoji+'</div>'
+    +'<div class="item-info"><div class="item-name">'+esc(item.name)+'</div>'
+    +'<div class="item-meta">'+typBadge(item)+' '+catBadge(item)+' '+dueBadge(dt)+'</div>'
+    +prog+'</div>'+right+'</div>';
+}
+
+// ── CALENDAR ──
+function renderCalendar(){
+  var mos=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
+  document.getElementById('calTitle').textContent=calY+'年 '+mos[calM];
+  var first=new Date(calY,calM,1).getDay(), days=new Date(calY,calM+1,0).getDate();
+  var todayStr=fmt(new Date());
+  var evDays={};
+  items.forEach(function(item){
+    var dt=item.type==='maint'?calcDue(item):item.due;
+    if(!dt)return;
+    var d=new Date(dt);
+    if(d.getFullYear()===calY&&d.getMonth()===calM){
+      var dd=d.getDate(); if(!evDays[dd])evDays[dd]=[]; evDays[dd].push(item);
+    }
+  });
+  var h='';
+  for(var i=0;i<first;i++) h+='<div class="cal-day"></div>';
+  for(var d=1;d<=days;d++){
+    var ds=calY+'-'+pad(calM+1)+'-'+pad(d), ev=evDays[d]||[], isT=ds===todayStr;
+    h+='<div class="cal-day'+(isT?' today':'')+(ev.length?' has-ev':'')+'">'+d
+      +ev.slice(0,2).map(function(e,i){ return '<div class="ev-dot" style="background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div>'; }).join('')
+      +'</div>';
+  }
+  document.getElementById('calDays').innerHTML=h;
+  var up=items.filter(function(item){
+    var dt=item.type==='maint'?calcDue(item):item.due; if(!dt)return false;
+    var d=new Date(dt); return d.getFullYear()===calY&&d.getMonth()===calM;
+  }).sort(function(a,b){ return new Date(a.type==='maint'?calcDue(a):a.due)-new Date(b.type==='maint'?calcDue(b):b.due); });
+  var el=document.getElementById('evList');
+  if(!up.length){ el.innerHTML='<div class="empty"><span class="empty-icon">🗓️</span><p>本月沒有到期項目</p></div>'; return; }
+  el.innerHTML=up.map(function(item,i){
+    var dt=item.type==='maint'?calcDue(item):item.due;
+    var d=new Date(dt);
+    return '<div class="ev-item" onclick="openDetail(\''+item.id+'\')">'
+      +'<div class="ev-date">'+d.getDate()+'日</div>'
+      +'<div class="ev-bar" style="background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div>'
+      +'<div class="ev-info"><div class="ev-name">'+esc(item.name)+'</div><div class="ev-sub-txt">'+typBadge(item)+' '+catBadge(item)+'</div></div>'
+      +((item.type==='sub'||item.type==='bill')?'<div class="ev-price">$'+(item.price||0).toLocaleString()+'</div>':'')
+      +'</div>';
+  }).join('');
+}
+window.shiftMo=function(d){ calM+=d; if(calM<0){calM=11;calY--;} if(calM>11){calM=0;calY++;} renderCalendar(); };
+
+// ── CHARTS ──
+function renderCharts(){
+  var ca={};
+  activeSubs().forEach(function(s){ ca[s.cat]=(ca[s.cat]||0)+(s.price/(CYC_MO[s.cycle]||1)); });
+  var labs=Object.keys(ca).map(function(c){ return SUB_CATS[c]||c; });
+  var data=Object.values(ca);
+  var colors=Object.keys(ca).map(function(_,i){ return CAT_COLORS[i%CAT_COLORS.length]; });
+  document.getElementById('pieTotal').textContent='$'+Math.round(subMo());
+  if(pieInst) pieInst.destroy();
+  pieInst=new Chart(document.getElementById('pieChart').getContext('2d'),{
+    type:'doughnut',
+    data:{labels:labs,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:'#fdf8f3',hoverOffset:4}]},
+    options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.label+': $'+Math.round(c.raw)+'/月';}}}},animation:{duration:600}}
+  });
+  document.getElementById('pieLeg').innerHTML=labs.map(function(l,i){ return '<div class="leg-item"><div class="leg-dot" style="background:'+colors[i]+'"></div>'+l+': <b>$'+Math.round(data[i])+'</b></div>'; }).join('');
+  var sorted=[].concat(subs(),bills()).filter(function(s){ return s.price>0; }).sort(function(a,b){ return b.price-a.price; });
+  var mx=sorted.length?sorted[0].price:1;
+  document.getElementById('barList').innerHTML=sorted.map(function(s,i){
+    return '<div class="bar-row"><div class="bar-lbl">'+s.emoji+' '+esc(s.name)+'</div>'
+      +'<div class="bar-track"><div class="bar-fill" style="width:'+(s.price/mx*100).toFixed(1)+'%;background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div></div>'
+      +'<div class="bar-val">$'+s.price.toLocaleString()+'</div></div>';
+  }).join('');
+}
+
+// ── REMINDERS ──
+function remCards(arr){
+  if(!arr.length) return '<div class="empty"><span class="empty-icon">🎉</span><p>14天內沒有到期項目</p></div>';
+  return arr.map(function(item){
+    var dt=item.type==='maint'?calcDue(item):item.due;
+    var d=daysUntil(dt), cls=d<=3?'bdg-red':d<=7?'bdg-yellow':'bdg-blue';
+    var lbl=d<0?'已逾期 '+Math.abs(d)+'天':d===0?'今天':d+'天後';
+    return '<div class="rem-card"><div class="rem-icon">'+item.emoji+'</div>'
+      +'<div class="rem-info"><div class="rem-name">'+esc(item.name)+'</div>'
+      +'<div class="rem-due">'+catBadge(item)+' <span class="badge '+cls+'">'+lbl+'</span> · '+dt+'</div></div></div>';
+  }).join('');
+}
+function renderReminders(){
+  var limit=14;
+  document.getElementById('rem-sub-list').innerHTML=remCards(subs().filter(function(s){ return s.status==='active'&&s.due&&daysUntil(s.due)<=limit; }).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
+  document.getElementById('rem-bill-list').innerHTML=remCards(bills().filter(function(b){ return b.due&&daysUntil(b.due)<=limit; }).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
+  document.getElementById('rem-maint-list').innerHTML=remCards(maints().filter(function(m){ return calcDue(m)&&daysUntil(calcDue(m))<=limit; }).sort(function(a,b){return daysUntil(calcDue(a))-daysUntil(calcDue(b));}));
+}
+
+// ── ICS EXPORT ──
+window.exportICS=function(){
+  var exp=items.filter(function(item){ var dt=item.type==='maint'?calcDue(item):item.due; return dt; });
+  if(!exp.length){ showToast('企鵝說：還沒有可匯出的項目喔','warning'); return; }
+  var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//家務秘書//TW\r\nCALSCALE:GREGORIAN\r\n';
+  exp.forEach(function(item){
+    var dt=(item.type==='maint'?calcDue(item):item.due).replace(/-/g,'');
+    var summary=item.type==='maint'?'🔧 '+item.name+' 汰換':item.type==='bill'?'🧾 '+item.name+' $'+item.price:'💳 '+item.name+' $'+item.price;
+    ics+='BEGIN:VEVENT\r\nUID:hsec-'+item.id+'@secretary\r\nSUMMARY:'+summary+'\r\nDTSTART;VALUE=DATE:'+dt+'\r\nDTEND;VALUE=DATE:'+dt+'\r\nBEGIN:VALARM\r\nTRIGGER:-P3D\r\nACTION:DISPLAY\r\nDESCRIPTION:'+item.name+' 即將到期\r\nEND:VALARM\r\nEND:VEVENT\r\n';
+  });
+  ics+='END:VCALENDAR';
+  var a=document.createElement('a');
+  a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
+  a.download='家務秘書行事曆.ics'; a.click();
+  toast('ics');
+};
+
+// ── ADD/EDIT ──
+var curEmojis=SUB_EMOJIS;
+function initEmojiRow(){
+  curEmojis=selType==='bill'?BILL_EMOJIS:selType==='maint'?MAINT_EMOJIS:SUB_EMOJIS;
+  if(curEmojis.indexOf(selEmoji)<0) selEmoji=curEmojis[0];
+  document.getElementById('emojiRow').innerHTML=curEmojis.map(function(e){ return '<div class="ep'+(e===selEmoji?' sel':'')+'" onclick="pickE(\''+e+'\')">'+e+'</div>'; }).join('');
+}
+window.pickE=function(e){ selEmoji=e; document.querySelectorAll('.ep').forEach(function(el){ el.classList.toggle('sel',el.textContent===e); }); };
+
+function setType(t){
+  selType=t;
+  ['sub','bill','maint'].forEach(function(k){ document.getElementById('typeBtn'+k.charAt(0).toUpperCase()+k.slice(1)).classList.toggle('sel',k===t); });
+  document.getElementById('sub-fields').style.display=t==='sub'?'':'none';
+  document.getElementById('bill-fields').style.display=t==='bill'?'':'none';
+  document.getElementById('maint-fields').style.display=t==='maint'?'':'none';
+  document.getElementById('f-name').placeholder=t==='sub'?'例：Netflix':t==='bill'?'例：健保費':'例：Brita 濾芯';
+  initEmojiRow();
+}
+window.setType=setType;
+
+window.openAdd=function(){
+  editId=null; selType='sub'; selEmoji='💳';
+  document.getElementById('modalTitle').textContent='✨ 新增項目';
+  document.getElementById('typeToggle').style.display='';
+  setType('sub');
+  ['f-name','f-note','f-price','f-bprice','f-interval','f-mcost'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['f-due','f-bdue','f-last','f-mdue'].forEach(function(id){ document.getElementById(id).value=''; });
+  document.getElementById('f-cycle').value='monthly';
+  document.getElementById('f-bcycle').value='monthly';
+  document.getElementById('f-cat').value='streaming';
+  document.getElementById('f-status').value='active';
+  document.getElementById('f-bcat').value='health';
+  document.getElementById('f-bremind').value='3';
+  document.getElementById('f-mcat').value='filter';
+  document.getElementById('delBtn').style.display='none';
+  document.getElementById('addOv').classList.add('show');
+};
+
+function openEdit(id){
+  var item=items.find(function(x){ return x.id===id; }); if(!item) return;
+  editId=id; selType=item.type; selEmoji=item.emoji||'💳';
+  document.getElementById('modalTitle').textContent='✏️ 編輯';
+  document.getElementById('typeToggle').style.display='none';
+  setType(item.type);
+  document.getElementById('f-name').value=item.name;
+  document.getElementById('f-note').value=item.note||'';
+  if(item.type==='sub'){
+    document.getElementById('f-price').value=item.price||0;
+    document.getElementById('f-cycle').value=item.cycle||'monthly';
+    document.getElementById('f-cat').value=item.cat||'other';
+    document.getElementById('f-status').value=item.status||'active';
+    document.getElementById('f-due').value=item.due||'';
+  } else if(item.type==='bill'){
+    document.getElementById('f-bprice').value=item.price||0;
+    document.getElementById('f-bcycle').value=item.cycle||'monthly';
+    document.getElementById('f-bcat').value=item.bcat||'other';
+    document.getElementById('f-bdue').value=item.due||'';
+    document.getElementById('f-bremind').value=item.remind||'3';
+  } else {
+    document.getElementById('f-last').value=item.lastDate||'';
+    document.getElementById('f-interval').value=item.interval||'';
+    document.getElementById('f-mcost').value=item.cost||'';
+    document.getElementById('f-mcat').value=item.mcat||'other';
+    document.getElementById('f-mdue').value=item.due||'';
+  }
+  document.getElementById('delBtn').style.display='block';
+  document.getElementById('addOv').classList.add('show');
+}
+
+window.doSave=function(){
+  var name=document.getElementById('f-name').value.trim();
+  if(!name){ toast('warn'); return; }
+  var item;
+  if(selType==='sub'){
+    item={id:editId||Date.now().toString(),type:'sub',name:name,emoji:selEmoji,
+      price:parseInt(document.getElementById('f-price').value)||0,
+      cycle:document.getElementById('f-cycle').value,cat:document.getElementById('f-cat').value,
+      status:document.getElementById('f-status').value,due:document.getElementById('f-due').value,
+      note:document.getElementById('f-note').value};
+  } else if(selType==='bill'){
+    item={id:editId||Date.now().toString(),type:'bill',name:name,emoji:selEmoji,
+      price:parseInt(document.getElementById('f-bprice').value)||0,
+      cycle:document.getElementById('f-bcycle').value,bcat:document.getElementById('f-bcat').value,
+      due:document.getElementById('f-bdue').value,remind:parseInt(document.getElementById('f-bremind').value)||3,
+      note:document.getElementById('f-note').value};
+  } else {
+    var lastDate=document.getElementById('f-last').value;
+    var interval=parseInt(document.getElementById('f-interval').value)||0;
+    var mdue=document.getElementById('f-mdue').value;
+    if(!mdue&&lastDate&&interval){ var d=new Date(lastDate); d.setDate(d.getDate()+interval); mdue=d.toISOString().slice(0,10); }
+    item={id:editId||Date.now().toString(),type:'maint',name:name,emoji:selEmoji,
+      lastDate:lastDate,interval:interval,cost:parseInt(document.getElementById('f-mcost').value)||0,
+      mcat:document.getElementById('f-mcat').value,due:mdue,note:document.getElementById('f-note').value};
+  }
+  var idx=items.findIndex(function(x){ return x.id===item.id; });
+  if(idx>=0) items[idx]=item; else items.push(item);
+  saveLocal(); push(); renderAll();
+  closeOv('addOv');
+  toast(editId?'update':'add');
+};
+
+window.doDelete=function(){
+  if(!editId) return;
+  var name=(items.find(function(x){ return x.id===editId; })||{}).name||'';
+  if(!confirm('確定刪除「'+name+'」？')) return;
+  items=items.filter(function(x){ return x.id!==editId; });
+  saveLocal(); push(); renderAll();
+  closeOv('addOv'); closeOv('detOv'); toast('del');
+};
+
+// ── DETAIL ──
+window.openDetail=function(id){
+  var item=items.find(function(x){ return x.id===id; }); if(!item) return;
+  viewId=id;
+  document.getElementById('d-icon').textContent=item.emoji;
+  document.getElementById('d-icon').style.background=bgItem(item);
+  document.getElementById('d-name').textContent=item.name;
+  document.getElementById('d-cat').innerHTML=typBadge(item)+' '+catBadge(item);
+  var isMaint=item.type==='maint',isBill=item.type==='bill';
+  document.getElementById('d-st-row').style.display=(isMaint||isBill)?'none':'';
+  document.getElementById('d-done-btn').style.display=isMaint?'':'none';
+  if(!isMaint&&!isBill){
+    document.querySelectorAll('.st-pick').forEach(function(b){ b.className='st-pick'+(item.status===b.dataset.st?' cur-'+item.status:''); });
+  }
+  var dt=item.type==='maint'?calcDue(item):item.due, d=daysUntil(dt);
+  var rows=[];
+  if(item.type==='sub'){
+    rows=[['💰 金額','$'+item.price.toLocaleString()+' / '+(CYCLES[item.cycle]||'月')],['📅 下次繳費',item.due||'—'],['⏰ 距離到期',item.due?(d<0?'已逾期 '+Math.abs(d)+'天':d===0?'今天':d+'天後'):'—'],['📝 備註',item.note||'—']];
+  } else if(item.type==='bill'){
+    rows=[['💰 金額','$'+item.price.toLocaleString()+' / '+(CYCLES[item.cycle]||'月')],['📅 下次繳費',item.due||'—'],['⏰ 距離到期',item.due?(d<0?'已逾期 '+Math.abs(d)+'天':d===0?'今天':d+'天後'):'—'],['🔔 提醒設定','提前 '+(item.remind||3)+' 天'],['📝 備註',item.note||'—']];
+  } else {
+    var pct=progPct(item);
+    rows=[['🔄 更換週期',item.interval?item.interval+'天':'—'],['📅 上次更換',item.lastDate||'—'],['⏰ 下次到期',dt||'—'],['📊 使用進度',pct+'% '+(pct>=90?'⚡快到了！':pct>=70?'⏰準備中':'✅還好')],['💰 更換費用',item.cost?'$'+item.cost:'免費'],['📝 備註',item.note||'—']];
+  }
+  document.getElementById('d-rows').innerHTML=rows.map(function(r){ return '<div class="det-row"><span class="det-k">'+r[0]+'</span><span class="det-v">'+esc(r[1])+'</span></div>'; }).join('');
+  document.getElementById('detOv').classList.add('show');
+};
+
+window.setStatus=function(st){
+  if(!viewId) return;
+  var idx=items.findIndex(function(i){ return i.id===viewId; }); if(idx<0) return;
+  items[idx].status=st; saveLocal(); push(); renderAll();
+  window.openDetail(viewId); toast('status');
+};
+
+window.markDone=function(){
+  if(!viewId) return;
+  var idx=items.findIndex(function(i){ return i.id===viewId; }); if(idx<0) return;
+  var today=fmt(new Date());
+  items[idx].lastDate=today; items[idx].due='';
+  if(items[idx].interval){ var d=new Date(today); d.setDate(d.getDate()+items[idx].interval); items[idx].due=d.toISOString().slice(0,10); }
+  saveLocal(); push(); renderAll();
+  window.openDetail(viewId); toast('done');
+};
+
+window.editFromDetail=function(){ closeOv('detOv'); openEdit(viewId); };
+
+// ── TABS ──
+window.switchTab=function(id,el){
+  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
+  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
+  el.classList.add('active');
+  document.getElementById('page-'+id).classList.add('active');
+  if(id==='charts') renderCharts();
+  if(id==='calendar') renderCalendar();
+  if(id==='reminders') renderReminders();
+};
+
+// ── UTILS ──
+window.maybeClose=function(e,id){ if(e.target.id===id) closeOv(id); };
+window.closeOv=function(id){ document.getElementById(id).classList.remove('show'); };
+
+// ── INIT ──
+var saved=localStorage.getItem('hsec_last_room');
+if(saved){ document.getElementById('roomInput').value=saved; roomCode=saved; enterApp(); }
+</script>
+</body>
+</html>
