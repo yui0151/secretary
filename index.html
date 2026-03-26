@@ -559,7 +559,38 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 </div>
 
+<!-- ═══ EMOJI PICKER MODAL ═══ -->
+<div class="overlay" id="emojiPickOv" onclick="maybeClose(event,'emojiPickOv')">
+<div class="modal">
+  <div class="modal-handle"></div>
+  <div class="modal-title">✨ 更換圖示</div>
+  <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">輸入任何一個 Emoji，或從鍵盤的表情符號選擇 🙂</div>
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
+    <div id="emojiPreview" style="font-size:44px;width:60px;height:60px;border-radius:14px;background:var(--cream);border:1.5px solid var(--latte);display:flex;align-items:center;justify-content:center;flex-shrink:0;">💳</div>
+    <input id="emojiInput" style="flex:1;padding:13px 14px;border:1.5px solid var(--latte);border-radius:var(--rsm);background:var(--cream);font-size:28px;text-align:center;outline:none;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);" maxlength="2" placeholder="🙂" oninput="previewEmoji(this.value)">
+  </div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">💡 iOS：按住鍵盤上的地球圖示 → 選 Emoji；Android：點鍵盤上的笑臉</div>
+  <div class="mbtn-row">
+    <button class="mbtn mbtn-c" onclick="closeOv('emojiPickOv')">取消</button>
+    <button class="mbtn mbtn-s" onclick="confirmEmojiPick()">套用</button>
+  </div>
+</div>
+</div>
+
 <!-- ═══ PENGUIN TOAST CONTAINER ═══ -->
+<!-- CONFIRM DELETE OVERLAY -->
+<div class="overlay" id="secConfirmOv" style="align-items:center;justify-content:center;padding:28px;">
+  <div style="background:var(--white);border-radius:var(--rlg);padding:26px 22px;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 40px var(--shadow);">
+    <div style="font-size:36px;margin-bottom:10px;">🗑️</div>
+    <div style="font-family:'Noto Serif TC',serif;font-size:16px;color:var(--deep);font-weight:500;margin-bottom:8px;">確定要移除嗎？</div>
+    <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;white-space:pre-line;" id="secConfirmMsg"></div>
+    <div style="display:flex;gap:8px;">
+      <button onclick="secConfirmCancel()" style="flex:1;padding:11px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--cream);color:var(--muted);">再想想</button>
+      <button onclick="secConfirmOk()" style="flex:1;padding:11px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--rb);color:var(--rs);">移除</button>
+    </div>
+  </div>
+</div>
+
 <div class="toast-wrap" id="toastWrap"></div>
 
 <!-- ═══ FIREBASE ═══ -->
@@ -821,10 +852,12 @@ function itemCard(item){
   }
   var prog = item.type==='maint'?'<div class="prog-track"><div class="prog-fill" style="width:'+progPct(item)+'%;background:'+(progPct(item)>=90?'var(--rs)':progPct(item)>=70?'var(--ys)':'var(--gs)')+'"></div></div>':'';
   return '<div class="item-card '+stClass(item)+'" onclick="openDetail(\''+item.id+'\')">'
-    +'<div class="item-icon" style="background:'+bgItem(item)+'">'+item.emoji+'</div>'
+    +'<div class="item-icon" style="background:'+bgItem(item)+';cursor:pointer;" onclick="event.stopPropagation();openEmojiPicker(\''+item.id+'\')">'+item.emoji+'</div>'
     +'<div class="item-info"><div class="item-name">'+esc(item.name)+'</div>'
     +'<div class="item-meta">'+typBadge(item)+' '+catBadge(item)+' '+dueBadge(dt)+'</div>'
-    +prog+'</div>'+right+'</div>';
+    +prog+'</div>'+right
+    +'<button style="border:none;background:none;font-size:16px;cursor:pointer;padding:4px;color:var(--latte);flex-shrink:0;" onclick="event.stopPropagation();confirmDelete(\''+item.id+'\',\''+esc(item.name)+'\')">🗑️</button>'
+    +'</div>';
 }
 
 // ── CALENDAR ──
@@ -1034,7 +1067,8 @@ window.doSave=function(){
 window.doDelete=function(){
   if(!editId) return;
   var name=(items.find(function(x){ return x.id===editId; })||{}).name||'';
-  if(!confirm('確定刪除「'+name+'」？')) return;
+  var confirmed = confirm('確定要移除「'+name+'」嗎？\n\n刪除後就找不回來囉 🗑️');
+  if(!confirmed) return;
   items=items.filter(function(x){ return x.id!==editId; });
   saveLocal(); push(); renderAll();
   closeOv('addOv'); closeOv('detOv'); toast('del');
@@ -1102,7 +1136,53 @@ window.switchTab=function(id,el){
 window.maybeClose=function(e,id){ if(e.target.id===id) closeOv(id); };
 window.closeOv=function(id){ document.getElementById(id).classList.remove('show'); };
 
-// ── INIT ──
+// ── EMOJI PICKER ──
+var emojiPickTarget = null;
+window.openEmojiPicker = function(id){
+  emojiPickTarget = id;
+  var cur = (items.find(function(x){return x.id===id;})||{}).emoji||'💳';
+  document.getElementById('emojiInput').value = cur;
+  document.getElementById('emojiPreview').textContent = cur;
+  document.getElementById('emojiPickOv').classList.add('show');
+  setTimeout(function(){ document.getElementById('emojiInput').focus(); }, 300);
+};
+window.previewEmoji = function(val){
+  var clean = val.trim();
+  if(clean) document.getElementById('emojiPreview').textContent = clean;
+};
+window.confirmEmojiPick = function(){
+  var val = document.getElementById('emojiInput').value.trim();
+  if(!val){ closeOv('emojiPickOv'); return; }
+  if(!emojiPickTarget) return;
+  var idx = items.findIndex(function(x){return x.id===emojiPickTarget;});
+  if(idx>=0){
+    items[idx].emoji = val;
+    saveLocal(); push(); renderAll();
+    toast('update');
+  }
+  closeOv('emojiPickOv');
+  emojiPickTarget = null;
+};
+
+// ── CONFIRM DELETE ──
+var _delPendingId = null;
+window.confirmDelete = function(id, name){
+  _delPendingId = id;
+  document.getElementById('secConfirmMsg').textContent = '確定要移除「'+name+'」嗎？\n刪除後就找不回來囉 🌿';
+  document.getElementById('secConfirmOv').classList.add('show');
+};
+window.secConfirmOk = function(){
+  document.getElementById('secConfirmOv').classList.remove('show');
+  if(!_delPendingId) return;
+  items = items.filter(function(x){return x.id!==_delPendingId;});
+  _delPendingId = null;
+  saveLocal(); push(); renderAll();
+  closeOv('detOv'); toast('del');
+};
+window.secConfirmCancel = function(){
+  document.getElementById('secConfirmOv').classList.remove('show');
+  _delPendingId = null;
+};
 var urlCode = new URLSearchParams(window.location.search).get('code');
 var saved=localStorage.getItem('hsec_last_room');
 var autoCode = urlCode || saved;
