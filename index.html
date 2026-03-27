@@ -561,15 +561,15 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 
 <!-- ═══ EMOJI PICKER MODAL ═══ -->
 <div class="overlay" id="emojiPickOv" onclick="maybeClose(event,'emojiPickOv')">
-<div class="modal">
+<div class="modal" style="max-width:100%;overflow-x:hidden;">
   <div class="modal-handle"></div>
   <div class="modal-title">✨ 更換圖示</div>
-  <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">輸入任何一個 Emoji，或從鍵盤的表情符號選擇 🙂</div>
-  <div style="display:flex;align-items:center;gap:12px;margin-bottom:6px;">
-    <div id="emojiPreview" style="font-size:44px;width:60px;height:60px;border-radius:14px;background:var(--cream);border:1.5px solid var(--latte);display:flex;align-items:center;justify-content:center;flex-shrink:0;">💳</div>
-    <input id="emojiInput" style="flex:1;padding:13px 14px;border:1.5px solid var(--latte);border-radius:var(--rsm);background:var(--cream);font-size:28px;text-align:center;outline:none;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);" maxlength="2" placeholder="🙂" oninput="previewEmoji(this.value)">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">輸入一個喜歡的 Emoji，旁邊可以即時預覽 🙂</div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%;box-sizing:border-box;">
+    <div id="emojiPreview" style="font-size:38px;width:56px;height:56px;min-width:56px;border-radius:14px;background:var(--cream);border:1.5px solid var(--latte);display:flex;align-items:center;justify-content:center;flex-shrink:0;">💳</div>
+    <input id="emojiInput" style="flex:1;min-width:0;max-width:100%;padding:12px 10px;border:1.5px solid var(--latte);border-radius:var(--rsm);background:var(--cream);font-size:26px;text-align:center;outline:none;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);box-sizing:border-box;" maxlength="2" placeholder="🙂" oninput="previewEmoji(this.value)">
   </div>
-  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;">💡 iOS：按住鍵盤上的地球圖示 → 選 Emoji；Android：點鍵盤上的笑臉</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">💡 iOS：點鍵盤左下角地球 🌐 → 選 Emoji<br>Android：點鍵盤上的笑臉或貼圖圖示</div>
   <div class="mbtn-row">
     <button class="mbtn mbtn-c" onclick="closeOv('emojiPickOv')">取消</button>
     <button class="mbtn mbtn-s" onclick="confirmEmojiPick()">套用</button>
@@ -1152,10 +1152,16 @@ window.previewEmoji = function(val){
 };
 window.confirmEmojiPick = function(){
   var val = document.getElementById('emojiInput').value.trim();
-  if(!val){ closeOv('emojiPickOv'); return; }
   if(!emojiPickTarget) return;
   var idx = items.findIndex(function(x){return x.id===emojiPickTarget;});
   if(idx>=0){
+    // if empty, restore default based on item type
+    if(!val){
+      var item=items[idx];
+      if(item.type==='sub') val='💳';
+      else if(item.type==='bill') val='🧾';
+      else val='🔧';
+    }
     items[idx].emoji = val;
     saveLocal(); push(); renderAll();
     toast('update');
