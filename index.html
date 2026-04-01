@@ -22,8 +22,17 @@
 }
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
 html{scroll-behavior:smooth;}
-body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--milk);color:var(--text);min-height:100vh;padding-bottom:88px;overflow-x:hidden;}
+body{font-family:'Zen Kaku Gothic New',sans-serif;background:var(--milk);color:var(--text);min-height:100vh;padding-bottom:calc(68px + env(safe-area-inset-bottom,0px));overflow-x:hidden;}
 body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellipse at 15% 8%,rgba(201,169,122,.08),transparent 50%),radial-gradient(ellipse at 85% 92%,rgba(139,99,67,.05),transparent 50%);pointer-events:none;z-index:0;}
+
+/* ══ BOTTOM NAV ══ */
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:var(--white);border-top:1.5px solid var(--latte);display:none;z-index:500;box-shadow:0 -2px 16px var(--shadow);padding-bottom:env(safe-area-inset-bottom,0px);}
+.bottom-nav.show{display:flex;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 2px 6px;gap:3px;cursor:pointer;color:var(--muted);font-family:'Zen Kaku Gothic New',sans-serif;border:none;background:none;-webkit-tap-highlight-color:transparent;transition:color .15s;}
+.bn-item.active{color:var(--caramel);}
+.bn-item:active{opacity:.7;}
+.bn-icon{font-size:20px;line-height:1;}
+.bn-label{font-size:9.5px;font-weight:600;letter-spacing:.2px;line-height:1;}
 
 /* ═══ LOGIN ═══ */
 #loginScreen{position:fixed;inset:0;background:var(--milk);z-index:9999;display:flex;align-items:center;justify-content:center;padding:24px;}
@@ -53,21 +62,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 #mainApp{display:none;}
 .header{background:var(--white);border-bottom:1.5px solid var(--latte);padding:13px 16px 0;position:sticky;top:0;z-index:100;box-shadow:0 2px 12px var(--shadow);}
 .header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
-
-/* ★ 任務4：返回首頁按鈕樣式 */
-.back-home-btn{
-  display:flex;align-items:center;gap:4px;
-  font-size:12px;color:var(--muted);
-  background:var(--cream);border:1px solid var(--latte);
-  border-radius:20px;padding:5px 11px;
-  text-decoration:none;
-  font-family:'Zen Kaku Gothic New',sans-serif;
-  white-space:nowrap;flex-shrink:0;
-  transition:background .18s;
-}
-.back-home-btn:active{background:var(--latte);}
-.header-left{display:flex;align-items:center;gap:8px;}
-
 .logo{font-family:'Noto Serif TC',serif;font-size:18px;font-weight:500;color:var(--deep);display:flex;flex-direction:column;gap:1px;}
 .logo-main{display:flex;align-items:center;gap:6px;}
 .logo-sub{font-size:10px;color:var(--muted);font-family:'Zen Kaku Gothic New',sans-serif;font-weight:400;padding-left:2px;}
@@ -122,9 +116,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .item-interval{font-size:10px;color:var(--muted);}
 .prog-track{height:4px;background:var(--cream);border-radius:2px;margin-top:6px;overflow:hidden;}
 .prog-fill{height:100%;border-radius:2px;transition:width .6s ease;}
-
-/* ★ 任務3：定期繳費標識徽章 */
-.badge-recurring{display:inline-flex;align-items:center;gap:2px;font-size:9px;padding:1px 5px;border-radius:10px;background:var(--pb);color:var(--ps);font-weight:600;}
 
 /* ═══ BADGES ═══ */
 .badge{display:inline-block;font-size:10px;padding:2px 7px;border-radius:20px;font-weight:600;}
@@ -203,7 +194,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .rem-section-hd::before{content:'';display:block;width:3px;height:12px;background:var(--caramel);border-radius:2px;}
 
 /* ═══ MODALS ═══ */
-.overlay{position:fixed;inset:0;background:rgba(61,43,26,.42);z-index:200;display:none;align-items:flex-end;backdrop-filter:blur(3px);}
+.overlay{position:fixed;inset:0;background:rgba(61,43,26,.42);z-index:600;display:none;align-items:flex-end;backdrop-filter:blur(3px);}
 .overlay.show{display:flex;}
 .modal{background:var(--white);border-radius:22px 22px 0 0;padding:20px 18px 44px;width:100%;max-height:90vh;overflow-y:auto;}
 .modal-handle{width:36px;height:4px;background:var(--latte);border-radius:2px;margin:0 auto 18px;}
@@ -226,17 +217,6 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .mbtn-s{background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;}
 .mbtn-d{background:var(--rb);color:var(--rs);}
 
-/* ★ 任務3：定期繳費開關樣式 */
-.toggle-row{display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--cream);border:1.5px solid var(--latte);border-radius:var(--rsm);margin-bottom:13px;}
-.toggle-label{font-size:13px;color:var(--text);}
-.toggle-sub{font-size:10px;color:var(--muted);margin-top:2px;}
-.toggle-switch{position:relative;width:44px;height:24px;flex-shrink:0;}
-.toggle-switch input{opacity:0;width:0;height:0;}
-.toggle-slider{position:absolute;inset:0;background:var(--latte);border-radius:12px;cursor:pointer;transition:.2s;}
-.toggle-slider::before{content:'';position:absolute;height:18px;width:18px;left:3px;top:3px;background:white;border-radius:50%;transition:.2s;}
-.toggle-switch input:checked + .toggle-slider{background:var(--caramel);}
-.toggle-switch input:checked + .toggle-slider::before{transform:translateX(20px);}
-
 /* ═══ DETAIL MODAL ═══ */
 .det-head{display:flex;align-items:center;gap:13px;margin-bottom:16px;padding-bottom:16px;border-bottom:1px solid var(--latte);}
 .det-icon{width:50px;height:50px;border-radius:13px;font-size:26px;display:flex;align-items:center;justify-content:center;flex-shrink:0;}
@@ -253,15 +233,13 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .det-k{font-size:12px;color:var(--muted);}
 .det-v{font-size:13px;font-weight:600;color:var(--text);}
 .done-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--gs),#5aa050);color:white;border:none;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;}
-/* ★ 繳費完成按鈕 */
-.bill-done-btn{width:100%;padding:13px;background:linear-gradient(135deg,var(--caramel),var(--brown));color:white;border:none;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;margin-bottom:10px;}
 
 /* ═══ EMPTY ═══ */
 .empty{text-align:center;padding:28px 20px;color:var(--muted);}
 .empty-icon{font-size:34px;display:block;margin-bottom:8px;}
 
 /* ═══ TOAST ═══ */
-.toast-wrap{position:fixed;bottom:100px;left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:500;}
+.toast-wrap{position:fixed;bottom:calc(68px + env(safe-area-inset-bottom,0px) + 12px);left:0;right:0;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none;z-index:800;}
 .toast-item{display:flex;align-items:center;gap:8px;background:var(--white);border:1px solid var(--latte);color:var(--text);font-size:13px;padding:10px 16px 10px 12px;border-radius:24px;box-shadow:0 4px 20px var(--shadow);opacity:0;transform:translateY(16px) scale(.95);transition:all .28s cubic-bezier(.34,1.56,.64,1);pointer-events:none;max-width:calc(100vw - 40px);}
 .toast-item.show{opacity:1;transform:translateY(0) scale(1);}
 .toast-item.removing{opacity:0;transform:translateY(-8px) scale(.95);transition:all .2s ease-in;}
@@ -278,16 +256,11 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 .toast-item.type-sync{border-color:var(--ps);background:var(--pb);}
 .toast-item.type-sync .toast-msg{color:#7050a0;}
 
-/* ═══ ANIMATIONS ═══ */
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px);}to{opacity:1;transform:translateY(0);}}
 .page.active .stat-card{animation:fadeUp .3s ease both;}
-.page.active .chart-card{animation:fadeUp .3s ease both;}
 .page.active .item-card:nth-child(1){animation:fadeUp .22s ease both;}
 .page.active .item-card:nth-child(2){animation:fadeUp .28s ease both;}
 .page.active .item-card:nth-child(3){animation:fadeUp .34s ease both;}
-.page.active .item-card:nth-child(4){animation:fadeUp .4s ease both;}
-.page.active .item-card:nth-child(5){animation:fadeUp .46s ease both;}
-.page.active .rem-card{animation:fadeUp .3s ease both;}
 </style>
 </head>
 <body>
@@ -299,8 +272,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="login-title">家務秘書</div>
     <div class="login-sub">訂閱與帳單管理小幫手<br>輸入家庭代號，企鵝寶寶幫你管好一切 🏡</div>
     <label class="login-label">家庭代號</label>
-    <input class="login-in" id="roomInput" placeholder="例：myfamily" maxlength="20"
-      onkeydown="if(event.key==='Enter')doLogin()">
+    <input class="login-in" id="roomInput" placeholder="例：myfamily" maxlength="20" onkeydown="if(event.key==='Enter')doLogin()">
     <div class="login-err" id="loginErr"></div>
     <button class="login-btn" onclick="doLogin()">讓企鵝寶寶開始工作 →</button>
     <div class="login-hint">兩個人輸入<b>相同代號</b>，不同裝置即時同步<br>代號不分大小寫 🐾</div>
@@ -313,38 +285,31 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <span class="pb-penguin">🐧</span>
     <span class="pb-speech" id="penguinSpeech">主人早安！企鵝寶寶已準備好，今天也交給我來管理吧！</span>
   </div>
-
   <div class="header">
     <div class="header-row">
-      <!-- ★ 任務4：返回首頁按鈕 -->
-      <div class="header-left">
-        <a href="https://yui0151.github.io/home/" class="back-home-btn">← 首頁</a>
-        <div class="logo">
-          <div class="logo-main">
-            <span class="sync-dot" id="syncDot"></span>
-            🐧 家務秘書
-          </div>
-          <div class="logo-sub">訂閱與帳單管理小幫手</div>
-        </div>
+      <div class="logo">
+        <div class="logo-main"><span class="sync-dot" id="syncDot"></span>🐧 家務秘書</div>
+        <div class="logo-sub">訂閱與帳單管理小幫手</div>
       </div>
       <div class="hdr-right">
         <span class="code-pill" id="codePill" onclick="copyCode()"></span>
+        <!-- Task 4: 返回首頁 -->
+        <div class="icon-btn" onclick="goApp('home')" title="返回首頁">🏠</div>
         <div class="icon-btn" onclick="openAdd()">＋</div>
       </div>
     </div>
     <div class="tabs">
       <div class="tab active" onclick="switchTab('overview',this)">📊 總覽</div>
-      <div class="tab"        onclick="switchTab('subs',this)">💳 訂閱</div>
-      <div class="tab"        onclick="switchTab('bills',this)">🧾 繳費</div>
-      <div class="tab"        onclick="switchTab('maint',this)">🔧 汰換</div>
-      <div class="tab"        onclick="switchTab('calendar',this)">📅 日曆</div>
-      <div class="tab"        onclick="switchTab('charts',this)">📈 圖表</div>
-      <div class="tab"        onclick="switchTab('reminders',this)">🔔 提醒</div>
+      <div class="tab" onclick="switchTab('subs',this)">💳 訂閱</div>
+      <div class="tab" onclick="switchTab('bills',this)">🧾 繳費</div>
+      <div class="tab" onclick="switchTab('maint',this)">🔧 汰換</div>
+      <div class="tab" onclick="switchTab('calendar',this)">📅 日曆</div>
+      <div class="tab" onclick="switchTab('charts',this)">📈 圖表</div>
+      <div class="tab" onclick="switchTab('reminders',this)">🔔 提醒</div>
     </div>
   </div>
 
   <div class="content">
-    <!-- ── 總覽 ── -->
     <div class="page active" id="page-overview">
       <div class="stat-grid">
         <div class="stat-card"><div class="stat-lbl">💳 每月訂閱</div><div class="stat-val" id="ov-sub">$0<small>/月</small></div><div class="stat-sub" id="ov-sub-cnt">0 個訂閱中</div></div>
@@ -359,30 +324,19 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
       <div class="sec-hd"><div class="sec-title">本月繳費</div><button class="sec-more" onclick="switchTab('bills',document.querySelectorAll('.tab')[2])">全部 →</button></div>
       <div class="item-list" id="ov-bill-list"></div>
     </div>
-
-    <!-- ── 訂閱 ── -->
     <div class="page" id="page-subs">
-      <div class="st-hd"><div class="st-dot" style="background:var(--gs)"></div>訂閱中</div>
-      <div class="item-list" id="list-active"></div>
-      <div class="st-hd"><div class="st-dot" style="background:var(--rs)"></div>準備取消</div>
-      <div class="item-list" id="list-cancel"></div>
-      <div class="st-hd"><div class="st-dot" style="background:var(--ys)"></div>暫停中</div>
-      <div class="item-list" id="list-pause"></div>
+      <div class="st-hd"><div class="st-dot" style="background:var(--gs)"></div>訂閱中</div><div class="item-list" id="list-active"></div>
+      <div class="st-hd"><div class="st-dot" style="background:var(--rs)"></div>準備取消</div><div class="item-list" id="list-cancel"></div>
+      <div class="st-hd"><div class="st-dot" style="background:var(--ys)"></div>暫停中</div><div class="item-list" id="list-pause"></div>
     </div>
-
-    <!-- ── 繳費 ── -->
     <div class="page" id="page-bills">
       <div class="sec-hd"><div class="sec-title">所有繳費項目</div></div>
       <div class="item-list" id="list-bills"></div>
     </div>
-
-    <!-- ── 汰換 ── -->
     <div class="page" id="page-maint">
       <div class="sec-hd"><div class="sec-title">所有定期追蹤</div></div>
       <div class="item-list" id="list-maint"></div>
     </div>
-
-    <!-- ── 日曆 ── -->
     <div class="page" id="page-calendar">
       <div class="chart-card">
         <div class="cal-hd">
@@ -391,42 +345,42 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
           <button class="cal-nav" onclick="shiftMo(1)">›</button>
         </div>
         <div class="cal-grid" style="margin-bottom:4px;">
-          <div class="cal-dow">日</div><div class="cal-dow">一</div><div class="cal-dow">二</div>
-          <div class="cal-dow">三</div><div class="cal-dow">四</div><div class="cal-dow">五</div><div class="cal-dow">六</div>
+          <div class="cal-dow">日</div><div class="cal-dow">一</div><div class="cal-dow">二</div><div class="cal-dow">三</div><div class="cal-dow">四</div><div class="cal-dow">五</div><div class="cal-dow">六</div>
         </div>
         <div class="cal-grid" id="calDays"></div>
       </div>
       <div class="ev-list-cal" id="evList"></div>
     </div>
-
-    <!-- ── 圖表 ── -->
     <div class="page" id="page-charts">
       <div class="chart-card">
         <div class="chart-title">🍩 每月支出分類（訂閱）</div>
-        <div class="chart-wrap"><canvas id="pieChart"></canvas>
-          <div class="chart-total"><div class="chart-total-val" id="pieTotal">$0</div><div class="chart-total-lbl">訂閱月費</div></div>
-        </div>
+        <div class="chart-wrap"><canvas id="pieChart"></canvas><div class="chart-total"><div class="chart-total-val" id="pieTotal">$0</div><div class="chart-total-lbl">訂閱月費</div></div></div>
         <div class="legend" id="pieLeg"></div>
       </div>
       <div class="chart-card"><div class="chart-title">📊 各項金額排行</div><div class="bar-list" id="barList"></div></div>
     </div>
-
-    <!-- ── 提醒 ── -->
     <div class="page" id="page-reminders">
       <div class="ics-card">
         <div class="ics-title">📅 匯出行事曆</div>
         <div class="ics-desc">將所有繳費日 + 汰換日一鍵下載 .ics 行事曆檔案，<br>匯入 Google Calendar 或 Apple 行事曆，提前 3 天自動通知 🔔</div>
         <button class="ics-btn" onclick="exportICS()">📥 下載 .ics 行事曆</button>
       </div>
-      <div class="rem-section-hd">💳 訂閱到期提醒</div>
-      <div id="rem-sub-list"></div>
-      <div class="rem-section-hd">🧾 繳費到期提醒</div>
-      <div id="rem-bill-list"></div>
-      <div class="rem-section-hd">🔧 汰換到期提醒</div>
-      <div id="rem-maint-list"></div>
+      <div class="rem-section-hd">💳 訂閱到期提醒</div><div id="rem-sub-list"></div>
+      <div class="rem-section-hd">🧾 繳費到期提醒</div><div id="rem-bill-list"></div>
+      <div class="rem-section-hd">🔧 汰換到期提醒</div><div id="rem-maint-list"></div>
     </div>
   </div>
 </div>
+
+<!-- ══ BOTTOM NAV ══ -->
+<nav class="bottom-nav" id="bottomNav">
+  <button class="bn-item" onclick="goApp('home')"><span class="bn-icon">🏠</span><span class="bn-label">首頁</span></button>
+  <button class="bn-item active"><span class="bn-icon">🐧</span><span class="bn-label">家務</span></button>
+  <button class="bn-item" onclick="goApp('inv')"><span class="bn-icon">🐰</span><span class="bn-label">庫存</span></button>
+  <button class="bn-item" onclick="goApp('ward')"><span class="bn-icon">👗</span><span class="bn-label">衣櫃</span></button>
+  <button class="bn-item" onclick="goApp('wiki')"><span class="bn-icon">📖</span><span class="bn-label">百科</span></button>
+  <button class="bn-item" onclick="goApp('pocket')"><span class="bn-icon">🗺️</span><span class="bn-label">地圖</span></button>
+</nav>
 
 <!-- ═══ ADD/EDIT MODAL ═══ -->
 <div class="overlay" id="addOv" onclick="maybeClose(event,'addOv')">
@@ -434,87 +388,44 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="modal-handle"></div>
   <div class="modal-title" id="modalTitle">✨ 新增項目</div>
   <div class="type-toggle" id="typeToggle">
-    <button class="type-btn sel" id="typeBtnSub"   onclick="setType('sub')">💳 訂閱</button>
-    <button class="type-btn"    id="typeBtnBill"   onclick="setType('bill')">🧾 繳費</button>
-    <button class="type-btn"    id="typeBtnMaint"  onclick="setType('maint')">🔧 汰換</button>
+    <button class="type-btn sel" id="typeBtnSub" onclick="setType('sub')">💳 訂閱</button>
+    <button class="type-btn" id="typeBtnBill" onclick="setType('bill')">🧾 繳費</button>
+    <button class="type-btn" id="typeBtnMaint" onclick="setType('maint')">🔧 汰換</button>
   </div>
   <div class="field"><label>圖示</label><div class="emoji-row" id="emojiRow"></div></div>
   <div class="field"><label>名稱 *</label><input id="f-name" placeholder="例：Netflix"></div>
-
-  <!-- SUB FIELDS -->
   <div id="sub-fields">
     <div class="field-2">
       <div class="field"><label>金額 (NT$)</label><input id="f-price" type="number" placeholder="0"></div>
-      <div class="field"><label>週期</label>
-        <select id="f-cycle">
-          <option value="monthly">每月</option><option value="yearly">每年</option>
-          <option value="quarterly">每季</option><option value="onetime">一次性</option>
-        </select>
-      </div>
+      <div class="field"><label>週期</label><select id="f-cycle"><option value="monthly">每月</option><option value="yearly">每年</option><option value="quarterly">每季</option><option value="onetime">一次性</option></select></div>
     </div>
     <div class="field-2">
-      <div class="field"><label>分類</label>
-        <select id="f-cat">
-          <option value="streaming">影音串流</option><option value="productivity">生產力工具</option>
-          <option value="home">家用服務</option><option value="other">其他</option>
-        </select>
-      </div>
-      <div class="field"><label>狀態</label>
-        <select id="f-status">
-          <option value="active">訂閱中</option><option value="cancel">準備取消</option><option value="pause">暫停</option>
-        </select>
-      </div>
+      <div class="field"><label>分類</label><select id="f-cat"><option value="streaming">影音串流</option><option value="productivity">生產力工具</option><option value="home">家用服務</option><option value="other">其他</option></select></div>
+      <div class="field"><label>狀態</label><select id="f-status"><option value="active">訂閱中</option><option value="cancel">準備取消</option><option value="pause">暫停</option></select></div>
     </div>
     <div class="field"><label>下次繳費日</label><input id="f-due" type="date"></div>
   </div>
-
-  <!-- BILL FIELDS -->
   <div id="bill-fields" style="display:none;">
     <div class="field-2">
       <div class="field"><label>金額 (NT$)</label><input id="f-bprice" type="number" placeholder="0"></div>
-      <div class="field"><label>週期</label>
-        <select id="f-bcycle">
-          <option value="monthly">每月</option><option value="bimonthly">每兩個月</option>
-          <option value="quarterly">每季</option><option value="yearly">每年</option>
-        </select>
-      </div>
+      <div class="field"><label>週期</label><select id="f-bcycle"><option value="monthly">每月</option><option value="bimonthly">每兩個月</option><option value="quarterly">每季</option><option value="yearly">每年</option></select></div>
     </div>
-    <div class="field"><label>分類</label>
-      <select id="f-bcat">
-        <option value="health">健保 / 勞保</option><option value="telecom">電話 / 網路費</option>
-        <option value="credit">信用卡費</option><option value="utility">水電費</option>
-        <option value="rent">房租 / 管理費</option><option value="tax">稅務</option>
-        <option value="other">其他</option>
-      </select>
-    </div>
+    <div class="field"><label>分類</label><select id="f-bcat"><option value="health">健保 / 勞保</option><option value="telecom">電話 / 網路費</option><option value="credit">信用卡費</option><option value="utility">水電費</option><option value="rent">房租 / 管理費</option><option value="tax">稅務</option><option value="other">其他</option></select></div>
     <div class="field"><label>下次繳費日</label><input id="f-bdue" type="date"></div>
-    <div class="field"><label>繳費提醒（提前幾天）</label>
-      <select id="f-bremind">
-        <option value="3">提前 3 天</option><option value="7">提前 7 天</option>
-        <option value="14">提前 14 天</option><option value="0">當天</option>
+    <div class="field"><label>繳費提醒（提前幾天）</label><select id="f-bremind"><option value="3">提前 3 天</option><option value="7">提前 7 天</option><option value="14">提前 14 天</option><option value="0">當天</option></select></div>
+    <!-- Task 3: 每月自動重設 -->
+    <div class="field">
+      <label>每月自動重設日期</label>
+      <select id="f-brecurring">
+        <option value="">不設定（手動管理）</option>
+        <option value="1">每月 1 日</option><option value="5">每月 5 日</option>
+        <option value="10">每月 10 日</option><option value="15">每月 15 日</option>
+        <option value="20">每月 20 日</option><option value="25">每月 25 日</option>
+        <option value="28">每月 28 日</option><option value="last">每月最後一天</option>
       </select>
-    </div>
-    <!-- ★ 任務3：定期繳費設定 -->
-    <div class="toggle-row">
-      <div>
-        <div class="toggle-label">每月自動生成</div>
-        <div class="toggle-sub">勾選完成後，自動建立下月同日的新項目</div>
-      </div>
-      <label class="toggle-switch">
-        <input type="checkbox" id="f-recurring">
-        <span class="toggle-slider"></span>
-      </label>
-    </div>
-    <div id="recurring-day-field" style="display:none;">
-      <div class="field">
-        <label>每月固定繳費日（1-31）</label>
-        <input id="f-dayofmonth" type="number" min="1" max="31" placeholder="例：5（每月5號）">
-        <div style="font-size:10px;color:var(--muted);margin-top:3px;">若該月無此日期，自動跳至該月最後一天</div>
-      </div>
+      <div style="font-size:11px;color:var(--muted);margin-top:4px;line-height:1.6;">設定後，點「已繳」將自動生成下個月的截止日 ♻️</div>
     </div>
   </div>
-
-  <!-- MAINT FIELDS -->
   <div id="maint-fields" style="display:none;">
     <div class="field-2">
       <div class="field"><label>上次更換日</label><input id="f-last" type="date"></div>
@@ -523,16 +434,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div class="field"><label>下次到期日（可覆蓋）</label><input id="f-mdue" type="date"></div>
     <div class="field-2">
       <div class="field"><label>費用（選填）</label><input id="f-mcost" type="number" placeholder="0"></div>
-      <div class="field"><label>分類</label>
-        <select id="f-mcat">
-          <option value="filter">濾芯/濾材</option><option value="battery">電池</option>
-          <option value="hygiene">衛生用品</option><option value="appliance">家電耗材</option>
-          <option value="car">汽車保養</option><option value="other">其他</option>
-        </select>
-      </div>
+      <div class="field"><label>分類</label><select id="f-mcat"><option value="filter">濾芯/濾材</option><option value="battery">電池</option><option value="hygiene">衛生用品</option><option value="appliance">家電耗材</option><option value="car">汽車保養</option><option value="other">其他</option></select></div>
     </div>
   </div>
-
   <div class="field"><label>備註</label><input id="f-note" placeholder="備註說明…"></div>
   <div class="mbtn-row">
     <button class="mbtn mbtn-c" onclick="closeOv('addOv')">取消</button>
@@ -553,12 +457,9 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div class="st-pick-row" id="d-st-row">
     <button class="st-pick" data-st="active" onclick="setStatus('active')">✅ 訂閱中</button>
     <button class="st-pick" data-st="cancel" onclick="setStatus('cancel')">🚫 準備取消</button>
-    <button class="st-pick" data-st="pause"  onclick="setStatus('pause')">⏸ 暫停</button>
+    <button class="st-pick" data-st="pause" onclick="setStatus('pause')">⏸ 暫停</button>
   </div>
-  <!-- ★ 汰換完成按鈕 -->
-  <button class="done-btn"      id="d-done-btn"      onclick="markDone()"     style="display:none;">✅ 已更換！今天起重新計時</button>
-  <!-- ★ 任務3：繳費完成按鈕 -->
-  <button class="bill-done-btn" id="d-bill-done-btn" onclick="markBillDone()" style="display:none;">✅ 已繳費！自動生成下期項目</button>
+  <button class="done-btn" id="d-done-btn" onclick="markDone()" style="display:none;">✅ 已繳/已更換！今天起重新計時</button>
   <div class="det-rows" id="d-rows"></div>
   <div class="mbtn-row" style="margin-top:16px;">
     <button class="mbtn mbtn-c" onclick="closeOv('detOv')">關閉</button>
@@ -567,17 +468,17 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 </div>
 
-<!-- ═══ EMOJI PICKER MODAL ═══ -->
+<!-- ═══ EMOJI PICKER ═══ -->
 <div class="overlay" id="emojiPickOv" onclick="maybeClose(event,'emojiPickOv')">
 <div class="modal" style="max-width:100%;overflow-x:hidden;">
   <div class="modal-handle"></div>
   <div class="modal-title">✨ 更換圖示</div>
-  <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">輸入一個喜歡的 Emoji 🙂</div>
-  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+  <div style="font-size:13px;color:var(--muted);margin-bottom:12px;line-height:1.6;">輸入一個喜歡的 Emoji，旁邊可以即時預覽 🙂</div>
+  <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;width:100%;box-sizing:border-box;">
     <div id="emojiPreview" style="font-size:38px;width:56px;height:56px;min-width:56px;border-radius:14px;background:var(--cream);border:1.5px solid var(--latte);display:flex;align-items:center;justify-content:center;flex-shrink:0;">💳</div>
-    <input id="emojiInput" style="flex:1;padding:12px 10px;border:1.5px solid var(--latte);border-radius:var(--rsm);background:var(--cream);font-size:26px;text-align:center;outline:none;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);" maxlength="2" placeholder="🙂" oninput="previewEmoji(this.value)">
+    <input id="emojiInput" style="flex:1;min-width:0;max-width:100%;padding:12px 10px;border:1.5px solid var(--latte);border-radius:var(--rsm);background:var(--cream);font-size:26px;text-align:center;outline:none;font-family:'Zen Kaku Gothic New',sans-serif;color:var(--text);box-sizing:border-box;" maxlength="2" placeholder="🙂" oninput="previewEmoji(this.value)">
   </div>
-  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">💡 iOS：點鍵盤左下角地球 🌐 → 選 Emoji</div>
+  <div style="font-size:11px;color:var(--muted);margin-bottom:14px;line-height:1.6;">💡 iOS：點鍵盤左下角地球 🌐 → 選 Emoji<br>Android：點鍵盤上的笑臉或貼圖圖示</div>
   <div class="mbtn-row">
     <button class="mbtn mbtn-c" onclick="closeOv('emojiPickOv')">取消</button>
     <button class="mbtn mbtn-s" onclick="confirmEmojiPick()">套用</button>
@@ -585,7 +486,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
 </div>
 </div>
 
-<!-- ═══ CONFIRM DELETE ═══ -->
+<!-- CONFIRM DELETE -->
 <div class="overlay" id="secConfirmOv" style="align-items:center;justify-content:center;padding:28px;">
   <div style="background:var(--white);border-radius:var(--rlg);padding:26px 22px;width:100%;max-width:320px;text-align:center;box-shadow:0 8px 40px var(--shadow);">
     <div style="font-size:36px;margin-bottom:10px;">🗑️</div>
@@ -593,7 +494,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
     <div style="font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:20px;white-space:pre-line;" id="secConfirmMsg"></div>
     <div style="display:flex;gap:8px;">
       <button onclick="secConfirmCancel()" style="flex:1;padding:11px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--cream);color:var(--muted);">再想想</button>
-      <button onclick="secConfirmOk()"     style="flex:1;padding:11px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--rb);color:var(--rs);">移除</button>
+      <button onclick="secConfirmOk()" style="flex:1;padding:11px;border-radius:var(--rsm);font-family:'Zen Kaku Gothic New',sans-serif;font-size:14px;font-weight:700;cursor:pointer;border:none;background:var(--rb);color:var(--rs);">移除</button>
     </div>
   </div>
 </div>
@@ -620,240 +521,194 @@ window._fbReady = true;
 if(window._onFbReady) window._onFbReady();
 </script>
 
-<!-- ═══ MAIN SCRIPT ═══ -->
 <script>
 'use strict';
 
-// ── STATE ──
-var items = [];
-var roomCode = '', editId = null, viewId = null;
-var selEmoji = '💳', selType = 'sub';
-var calY = new Date().getFullYear(), calM = new Date().getMonth();
-var unsubFb = null, saveTimer = null, lastPushed = 0;
-var pieInst = null;
-var emojiPickTargetId = null;
-
-// ── CONSTANTS ──
-var SUB_EMOJIS   = ['💳','📱','🎬','🎵','📺','🎮','☁️','🤖','📧','🔒','🌐','💼','📚','🎯','⚡','🎁','🏠','🎨','🛒','📰'];
-var BILL_EMOJIS  = ['🏥','📡','💳','💡','🏠','🧾','🚰','💰','🏦','📋','🔑','🚗','🎓','📬','🌐','⚡','🏛️','📝','🪙','💸'];
-var MAINT_EMOJIS = ['🔧','💧','🔋','🪥','🧹','🚿','🌬️','🚗','💡','🪣','🧊','🌡️','🛁','🧴','🔩','🪛','🏠','🌿','♻️','⚙️'];
-var CYCLES    = {monthly:'月',yearly:'年',quarterly:'季',onetime:'次',bimonthly:'兩月'};
-var CYC_MO    = {monthly:1,yearly:12,quarterly:3,onetime:0,bimonthly:2};
-var SUB_CATS  = {streaming:'影音串流',productivity:'生產力',home:'家用',other:'其他'};
-var BILL_CATS = {health:'健保/勞保',telecom:'電話/網路',credit:'信用卡',utility:'水電費',rent:'房租/管理費',tax:'稅務',other:'其他'};
-var MAINT_CATS= {filter:'濾芯/濾材',battery:'電池',hygiene:'衛生用品',appliance:'家電耗材',car:'汽車保養',other:'其他'};
-var CAT_COLORS= ['#c9a97a','#8aabcc','#c07878','#8aba88','#a888c8','#c8a050','#a0b890','#cc8878','#78a8c8'];
-
-// ── TOAST ──
-var PENGUIN_MSGS = {
-  add:    ['企鵝寶寶已記好了！✏️','咕嚕～已幫你存好囉！','嗯嗯！記下來了 🐧'],
-  update: ['更新完畢！企鵝寶寶點頭確認 ✅','好的好的，已經改好了！','企鵝秘書更新完成 🐧'],
-  del:    ['呼～刪掉了！企鵝寶寶整理好了 🗑️','刪除成功，記錄已消失！','咔嚓！已移除囉 🐧'],
-  sync:   ['跟家人同步完畢 ✨','收到更新了！企鵝在線 🐧','資料剛剛同步好了～'],
-  copy:   ['代號已複製！傳給家人就能共用 📋','複製成功！🐧'],
-  done:   ['太好了！企鵝寶寶幫你重設計時 ⏰','✅ 已更換！下次提醒已更新','換好了！企鵝寶寶記住新日期了 🐧'],
-  bill_done: ['繳費完成！🐧 已幫你建立下期項目','下期繳費已自動生成 ✅','企鵝秘書記好下次了 📋'],
-  status: ['狀態更新了！企鵝確認完畢 🐧','好的，狀態已更改 ✅'],
-  warn:   ['咦？好像有什麼沒填喔！🐧','企鵝寶寶說：請填寫名稱 ✏️'],
-  ics:    ['行事曆已匯出！📅 匯入後企鵝會提醒你','下載好了！記得匯入行事曆 🗓️'],
+// ── 導航（Task 0）──
+var APP_URLS={
+  home:'https://yui0151.github.io/home/',
+  inv:'https://yui0151.github.io/inventory/',
+  ward:'https://yui0151.github.io/wardrobe/',
+  pocket:'https://yamap610.github.io/pocket-list/',
+  wiki:'https://yamap610.github.io/mywiki/'
 };
-function pRand(arr){ return arr[Math.floor(Math.random()*arr.length)]; }
+window.goApp=function(key){
+  var base=APP_URLS[key]; if(!base)return;
+  window.location.href=base+(roomCode?'?code='+roomCode:'');
+};
 
-function showToast(msg, type, duration){
-  type = type||'default'; duration = duration||2800;
-  var wrap = document.getElementById('toastWrap');
-  var el = document.createElement('div');
-  el.className = 'toast-item type-'+(type==='default'?'info':type);
-  var face = type==='success'||type==='done'||type==='bill_done'?'🐧':type==='error'?'😨':type==='warning'?'🤔':'🐧';
+var items=[],roomCode='',editId=null,viewId=null;
+var selEmoji='💳',selType='sub';
+var calY=new Date().getFullYear(),calM=new Date().getMonth();
+var unsubFb=null,saveTimer=null,lastPushed=0,pieInst=null;
+var secConfirmCb=null;
+
+var SUB_EMOJIS=['💳','📱','🎬','🎵','📺','🎮','☁️','🤖','📧','🔒','🌐','💼','📚','🎯','⚡','🎁','🏠','🎨','🛒','📰'];
+var BILL_EMOJIS=['🏥','📡','💳','💡','🏠','🧾','🚰','💰','🏦','📋','🔑','🚗','🎓','📬','🌐','⚡','🏛️','📝','🪙','💸'];
+var MAINT_EMOJIS=['🔧','💧','🔋','🪥','🧹','🚿','🌬️','🚗','💡','🪣','🧊','🌡️','🛁','🧴','🔩','🪛','🏠','🌿','♻️','⚙️'];
+var CYCLES={monthly:'月',yearly:'年',quarterly:'季',onetime:'次',bimonthly:'兩月'};
+var CYC_MO={monthly:1,yearly:12,quarterly:3,onetime:0,bimonthly:2};
+var SUB_CATS={streaming:'影音串流',productivity:'生產力',home:'家用',other:'其他'};
+var BILL_CATS={health:'健保/勞保',telecom:'電話/網路',credit:'信用卡',utility:'水電費',rent:'房租/管理費',tax:'稅務',other:'其他'};
+var MAINT_CATS={filter:'濾芯/濾材',battery:'電池',hygiene:'衛生用品',appliance:'家電耗材',car:'汽車保養',other:'其他'};
+var CAT_COLORS=['#c9a97a','#8aabcc','#c07878','#8aba88','#a888c8','#c8a050','#a0b890','#cc8878','#78a8c8'];
+
+var PENGUIN_MSGS={
+  add:['企鵝寶寶已記好了！✏️','咕嚕～已幫你存好囉！','嗯嗯！記下來了 🐧'],
+  update:['更新完畢！企鵝寶寶點頭確認 ✅','好的好的，已經改好了！','企鵝秘書更新完成 🐧'],
+  del:['呼～刪掉了！企鵝寶寶整理好了 🗑️','刪除成功，記錄已消失！','咔嚓！已移除囉 🐧'],
+  sync:['跟家人同步完畢 ✨','收到更新了！企鵝在線 🐧','資料剛剛同步好了～'],
+  copy:['代號已複製！傳給家人就能共用 📋','複製成功！🐧'],
+  done:['太好了！企鵝寶寶幫你重設計時 ⏰','✅ 已繳！下次提醒已更新','換好了！企鵝寶寶記住新日期了 🐧'],
+  status:['狀態更新了！企鵝確認完畢 🐧','好的，狀態已更改 ✅'],
+  warn:['咦？好像有什麼沒填喔！🐧','企鵝寶寶說：請填寫名稱 ✏️'],
+  ics:['行事曆已匯出！📅 匯入後企鵝會提醒你','下載好了！記得匯入行事曆 🗓️'],
+};
+function pRand(arr){return arr[Math.floor(Math.random()*arr.length)];}
+
+function showToast(msg,type,duration){
+  type=type||'default';duration=duration||2800;
+  var wrap=document.getElementById('toastWrap');
+  var el=document.createElement('div');
+  el.className='toast-item type-'+(type==='default'?'info':type);
+  var face='🐧';
   el.innerHTML='<span class="toast-penguin">'+face+'</span><span class="toast-msg">'+msg+'</span>';
   wrap.appendChild(el);
-  var all=wrap.querySelectorAll('.toast-item'); if(all.length>3) all[0].remove();
-  requestAnimationFrame(function(){ requestAnimationFrame(function(){ el.classList.add('show'); }); });
-  setTimeout(function(){ el.classList.add('removing'); setTimeout(function(){ if(el.parentNode) el.remove(); }, 220); }, duration);
+  var all=wrap.querySelectorAll('.toast-item');
+  if(all.length>3)all[0].remove();
+  requestAnimationFrame(function(){requestAnimationFrame(function(){el.classList.add('show');});});
+  setTimeout(function(){el.classList.add('removing');setTimeout(function(){if(el.parentNode)el.remove();},220);},duration);
 }
-window.showToast = showToast;
+window.showToast=showToast;
+function toast(key){showToast(pRand(PENGUIN_MSGS[key]||[key]),key==='warn'||key==='error'?'error':key==='done'||key==='status'||key==='update'?'success':key==='sync'?'sync':key==='del'?'warning':'info');}
 
-function toast(key){ showToast(pRand(PENGUIN_MSGS[key]||[key]), ['warn','error'].includes(key)?'error':['done','update','add','bill_done'].includes(key)?'success':key==='sync'?'sync':'info'); }
+function lk(k){return 'hsec_'+roomCode+'_'+k;}
+function loadLocal(){try{items=JSON.parse(localStorage.getItem(lk('items'))||'[]');}catch(e){items=[];}}
+function saveLocal(){localStorage.setItem(lk('items'),JSON.stringify(items));}
+function payload(){return {items:items,updatedAt:Date.now()};}
 
-// ── LOCAL STORAGE ──
-function lk(k){ return 'hsec_'+roomCode+'_'+k; }
-function loadLocal(){ try{ items=JSON.parse(localStorage.getItem(lk('items'))||'[]'); }catch(e){ items=[]; } }
-function saveLocal(){ localStorage.setItem(lk('items'),JSON.stringify(items)); }
-function payload(){ return {items:items,updatedAt:Date.now()}; }
-
-// ── FIREBASE ──
 function push(){
-  if(!roomCode||!window._fbSetDoc) return;
+  if(!roomCode||!window._fbSetDoc)return;
   clearTimeout(saveTimer);
-  saveTimer=setTimeout(function(){ lastPushed=Date.now(); window._fbSetDoc(roomCode,payload()).catch(function(){}); },800);
+  saveTimer=setTimeout(function(){lastPushed=Date.now();window._fbSetDoc(roomCode,payload()).catch(function(){});},800);
 }
 function applyRemote(data){
-  if(data.updatedAt&&data.updatedAt<=lastPushed) return;
-  items=data.items||[]; saveLocal(); renderAll(); setSyncDot('on');
+  if(data.updatedAt&&data.updatedAt<=lastPushed)return;
+  items=data.items||[];saveLocal();renderAll();setSyncDot('on');
 }
-function setSyncDot(s){ document.getElementById('syncDot').className='sync-dot'+(s==='off'?' off':s==='err'?' err':''); }
+function setSyncDot(s){document.getElementById('syncDot').className='sync-dot'+(s==='off'?' off':s==='err'?' err':'');}
 
 function startSync(){
-  if(unsubFb){ unsubFb(); unsubFb=null; }
+  if(unsubFb){unsubFb();unsubFb=null;}
   setSyncDot('off');
   window._fbGetDoc(roomCode).then(function(snap){
-    if(snap.exists()){ applyRemote(snap.data()); setSyncDot('on'); }
-    else{ if(!items.length) loadSample(); push(); setSyncDot('on'); }
+    if(snap.exists()){applyRemote(snap.data());setSyncDot('on');}
+    else{if(!items.length)loadSample();push();setSyncDot('on');}
     renderAll();
-  }).catch(function(){ setSyncDot('err'); showToast('企鵝寶寶連線中...請稍候','warning'); });
-  unsubFb=window._fbListen(roomCode,function(data){ applyRemote(data); setSyncDot('on'); toast('sync'); });
+  }).catch(function(){setSyncDot('err');showToast('企鵝寶寶連線中...請稍候','warning');});
+  unsubFb=window._fbListen(roomCode,function(data){applyRemote(data);setSyncDot('on');toast('sync');});
 }
 
-// ── LOGIN ──
 function doLogin(){
   var v=document.getElementById('roomInput').value.trim().toLowerCase().replace(/\s+/g,'');
   var err=document.getElementById('loginErr');
-  if(!v||v.length<2){ err.textContent='代號至少 2 個字元'; return; }
-  err.textContent=''; roomCode=v;
+  if(!v||v.length<2){err.textContent='代號至少 2 個字元';return;}
+  err.textContent='';roomCode=v;
   localStorage.setItem('hsec_last_room',v);
   enterApp();
 }
 window.doLogin=doLogin;
 
 function enterApp(){
+  // 讀取 URL 參數中的 code
+  var params=new URLSearchParams(location.search);
+  var urlCode=params.get('code');
+  if(urlCode&&!roomCode)roomCode=urlCode.toLowerCase().trim();
+
   loadLocal();
   document.getElementById('loginScreen').style.display='none';
   document.getElementById('mainApp').style.display='block';
+  document.getElementById('bottomNav').classList.add('show');
   document.getElementById('codePill').textContent='🏠 '+roomCode.toUpperCase();
   initEmojiRow();
   renderGreeting();
-  // ★ 任務3：繳費完成開關監聽
-  document.getElementById('f-recurring').addEventListener('change', function(){
-    document.getElementById('recurring-day-field').style.display = this.checked ? '' : 'none';
-  });
-  if(window._fbReady) startSync();
-  else window._onFbReady=function(){ startSync(); };
-  if(!items.length) loadSample();
+  if(window._fbReady)startSync();
+  else window._onFbReady=function(){startSync();};
+  if(!items.length)loadSample();
   renderAll();
-  // 自動帶入 URL 中的 code
-  var params = new URLSearchParams(location.search);
-  var urlCode = params.get('code');
-  if(urlCode && urlCode !== roomCode) { roomCode=urlCode.toLowerCase(); document.getElementById('codePill').textContent='🏠 '+roomCode.toUpperCase(); }
 }
 
 function renderGreeting(){
   var h=new Date().getHours();
   var msgs;
-  if(h>=5&&h<11)   msgs=['早安！企鵝寶寶精神飽滿上班囉 ☀️','早安！來看看今天有什麼需要留意的？'];
-  else if(h>=11&&h<14) msgs=['午安！吃飯時順便看一下帳單吧 🍱','中午好！企鵝寶寶正在認真整理清單'];
-  else if(h>=14&&h<18) msgs=['下午好！有什麼需要更新的嗎？🐧','下午囉！企鵝寶寶隨時待命'];
-  else if(h>=18&&h<22) msgs=['晚上好！今天的帳有記清楚嗎？🌙','辛苦了！企鵝寶寶幫你管好家務'];
+  if(h>=5&&h<11)msgs=['早安！企鵝寶寶精神飽滿上班囉 ☀️','早安！來看看今天有什麼需要留意的？'];
+  else if(h>=11&&h<14)msgs=['午安！吃飯時順便看一下帳單吧 🍱','中午好！企鵝寶寶正在認真整理清單'];
+  else if(h>=14&&h<18)msgs=['下午好！有什麼需要更新的嗎？🐧','下午囉！企鵝寶寶隨時待命'];
+  else if(h>=18&&h<22)msgs=['晚上好！今天的帳有記清楚嗎？🌙','辛苦了！企鵝寶寶幫你管好家務'];
   else msgs=['夜深了，企鵝寶寶還在守護你的帳單 ⭐','安靜的夜晚，企鵝寶寶陪你記帳 🌙'];
-  var dueSoon=items.filter(function(i){ var dt=i.type==='maint'?calcDue(i):i.due; return daysUntil(dt)<=3; });
-  var extra = dueSoon.length ? '另外有 <b>'+dueSoon.length+' 項</b>即將到期，記得確認喔 📋' : '';
+  var dueSoon=items.filter(function(i){var dt=i.type==='maint'?calcDue(i):i.due;return daysUntil(dt)<=3;});
+  var extra=dueSoon.length?'另外有 <b>'+dueSoon.length+' 項</b>即將到期，記得確認喔 📋':'';
   document.getElementById('penguinSpeech').innerHTML=msgs[Math.floor(Math.random()*msgs.length)]+(extra?' '+extra:'');
   document.getElementById('penguinBar').classList.add('show');
 }
 
 window.copyCode=function(){
-  if(navigator.clipboard) navigator.clipboard.writeText(roomCode).then(function(){ toast('copy'); });
+  if(navigator.clipboard)navigator.clipboard.writeText(roomCode).then(function(){toast('copy');});
   else showToast('代號：'+roomCode.toUpperCase(),'info');
 };
 
-// ── SAMPLE DATA ──
 function loadSample(){
-  function nd(d){ var t=new Date(),r=new Date(t.getFullYear(),t.getMonth(),d); if(r<t)r.setMonth(r.getMonth()+1); return r.toISOString().slice(0,10); }
-  function future(days){ var t=new Date(); t.setDate(t.getDate()+days); return t.toISOString().slice(0,10); }
-  function past(days){ var t=new Date(); t.setDate(t.getDate()-days); return t.toISOString().slice(0,10); }
+  function nd(d){var t=new Date(),r=new Date(t.getFullYear(),t.getMonth(),d);if(r<t)r.setMonth(r.getMonth()+1);return r.toISOString().slice(0,10);}
+  function future(days){var t=new Date();t.setDate(t.getDate()+days);return t.toISOString().slice(0,10);}
+  function past(days){var t=new Date();t.setDate(t.getDate()-days);return t.toISOString().slice(0,10);}
   items=[
     {id:'s1',type:'sub',name:'Spotify 家庭',emoji:'🎵',price:179,cycle:'monthly',cat:'streaming',status:'active',due:nd(15),note:'6人共用'},
     {id:'s2',type:'sub',name:'Netflix',emoji:'📺',price:270,cycle:'monthly',cat:'streaming',status:'active',due:nd(20),note:''},
     {id:'s3',type:'sub',name:'ChatGPT Plus',emoji:'🤖',price:620,cycle:'monthly',cat:'productivity',status:'active',due:nd(8),note:''},
     {id:'s4',type:'sub',name:'iCloud 200GB',emoji:'☁️',price:30,cycle:'monthly',cat:'productivity',status:'active',due:nd(3),note:''},
-    {id:'s5',type:'sub',name:'YouTube Premium',emoji:'🎬',price:179,cycle:'monthly',cat:'streaming',status:'cancel',due:nd(18),note:'考慮取消'},
-    // ★ 加上 isRecurring 欄位的範例繳費
-    {id:'b1',type:'bill',name:'健保費',emoji:'🏥',price:1249,cycle:'monthly',bcat:'health',due:nd(25),remind:3,isRecurring:true,dayOfMonth:25,note:'每月自行繳納'},
-    {id:'b2',type:'bill',name:'勞保費',emoji:'🏛️',price:741,cycle:'monthly',bcat:'health',due:nd(25),remind:3,isRecurring:true,dayOfMonth:25,note:''},
-    {id:'b3',type:'bill',name:'中華電信',emoji:'📡',price:499,cycle:'monthly',bcat:'telecom',due:nd(10),remind:7,isRecurring:true,dayOfMonth:10,note:'上網+電話'},
-    {id:'b4',type:'bill',name:'信用卡費',emoji:'💳',price:8000,cycle:'monthly',bcat:'credit',due:nd(5),remind:7,isRecurring:false,note:'每月帳單'},
+    {id:'b1',type:'bill',name:'健保費',emoji:'🏥',price:1249,cycle:'monthly',bcat:'health',due:nd(25),remind:3,brecurring:'25',note:'每月自行繳納'},
+    {id:'b2',type:'bill',name:'中華電信',emoji:'📡',price:499,cycle:'monthly',bcat:'telecom',due:nd(10),remind:7,brecurring:'10',note:'上網+電話'},
+    {id:'b3',type:'bill',name:'信用卡費',emoji:'💳',price:8000,cycle:'monthly',bcat:'credit',due:nd(5),remind:7,brecurring:'5',note:'每月帳單'},
     {id:'m1',type:'maint',name:'Brita 濾芯',emoji:'💧',mcat:'filter',lastDate:past(75),interval:90,cost:200,note:'冷水壺',due:future(15)},
     {id:'m2',type:'maint',name:'冷氣濾網',emoji:'🌬️',mcat:'appliance',lastDate:past(20),interval:30,cost:0,note:'每月清洗',due:future(10)},
-    {id:'m3',type:'maint',name:'電動牙刷頭',emoji:'🪥',mcat:'hygiene',lastDate:past(55),interval:60,cost:80,note:'',due:future(5)},
   ];
   saveLocal();
 }
 
-// ── HELPERS ──
-function subs(){ return items.filter(function(i){ return i.type==='sub'; }); }
-function bills(){ return items.filter(function(i){ return i.type==='bill'; }); }
-function maints(){ return items.filter(function(i){ return i.type==='maint'; }); }
-function activeSubs(){ return subs().filter(function(s){ return s.status==='active'; }); }
-function subMo(){ return activeSubs().reduce(function(a,s){ return a+(s.price/(CYC_MO[s.cycle]||1)); },0); }
-function billMo(){ return bills().reduce(function(a,b){ return a+(b.price/(CYC_MO[b.cycle]||1)); },0); }
-function daysUntil(dt){ if(!dt)return 999; var d=new Date(dt),t=new Date(); t.setHours(0,0,0,0);d.setHours(0,0,0,0); return Math.round((d-t)/86400000); }
-function calcDue(item){ if(item.type!=='maint')return item.due; if(item.due)return item.due; if(item.lastDate&&item.interval){ var d=new Date(item.lastDate); d.setDate(d.getDate()+parseInt(item.interval)); return d.toISOString().slice(0,10); } return null; }
-function maintStatus(item){ var d=daysUntil(calcDue(item)); if(d<0)return 'overdue'; if(d<=14)return 'soon'; return 'ok'; }
-function progPct(item){ if(!item.lastDate||!item.interval)return 0; var s=new Date(item.lastDate),n=new Date(); var e=Math.round((n-s)/86400000); return Math.min(100,Math.round(e/item.interval*100)); }
-function dueBadge(dt){ var d=daysUntil(dt); if(d<0)return '<span class="badge bdg-red">逾期 '+Math.abs(d)+'天</span>'; if(d<=3)return '<span class="badge bdg-red">⚡ '+d+'天後</span>'; if(d<=7)return '<span class="badge bdg-yellow">⏰ '+d+'天後</span>'; if(d<=14)return '<span class="badge bdg-blue">'+d+'天後</span>'; return '<span class="badge bdg-brown">'+(dt?dt.slice(5):'—')+'</span>'; }
-function typBadge(item){ if(item.type==='sub')return '<span class="badge tbdg-sub">訂閱</span>'; if(item.type==='bill')return '<span class="badge tbdg-bill">繳費</span>'; return '<span class="badge tbdg-maint">汰換</span>'; }
+function subs(){return items.filter(function(i){return i.type==='sub';});}
+function bills(){return items.filter(function(i){return i.type==='bill';});}
+function maints(){return items.filter(function(i){return i.type==='maint';});}
+function activeSubs(){return subs().filter(function(s){return s.status==='active';});}
+function subMo(){return activeSubs().reduce(function(a,s){return a+(s.price/(CYC_MO[s.cycle]||1));},0);}
+function billMo(){return bills().reduce(function(a,b){return a+(b.price/(CYC_MO[b.cycle]||1));},0);}
+function daysUntil(dt){if(!dt)return 999;var d=new Date(dt),t=new Date();t.setHours(0,0,0,0);d.setHours(0,0,0,0);return Math.round((d-t)/86400000);}
+function calcDue(item){if(item.type!=='maint')return item.due;if(item.due)return item.due;if(item.lastDate&&item.interval){var d=new Date(item.lastDate);d.setDate(d.getDate()+parseInt(item.interval));return d.toISOString().slice(0,10);}return null;}
+function maintStatus(item){var d=daysUntil(calcDue(item));if(d<0)return 'overdue';if(d<=14)return 'soon';return 'ok';}
+function progPct(item){if(!item.lastDate||!item.interval)return 0;var s=new Date(item.lastDate),n=new Date();var e=Math.round((n-s)/86400000);return Math.min(100,Math.round(e/item.interval*100));}
+function dueBadge(dt){var d=daysUntil(dt);if(d<0)return '<span class="badge bdg-red">逾期 '+Math.abs(d)+'天</span>';if(d<=3)return '<span class="badge bdg-red">⚡ '+d+'天後</span>';if(d<=7)return '<span class="badge bdg-yellow">⏰ '+d+'天後</span>';if(d<=14)return '<span class="badge bdg-blue">'+d+'天後</span>';return '<span class="badge bdg-brown">'+(dt?dt.slice(5):'—')+'</span>';}
+function typBadge(item){if(item.type==='sub')return '<span class="badge tbdg-sub">訂閱</span>';if(item.type==='bill')return '<span class="badge tbdg-bill">繳費</span>';return '<span class="badge tbdg-maint">汰換</span>';}
 function catBadge(item){
-  if(item.type==='sub')  return '<span class="badge cat-'+(item.cat||'other')+'">'+(SUB_CATS[item.cat]||item.cat)+'</span>';
-  if(item.type==='bill') return '<span class="badge cat-'+(item.bcat||'other')+'">'+(BILL_CATS[item.bcat]||item.bcat)+'</span>';
+  if(item.type==='sub')return '<span class="badge cat-'+(item.cat||'other')+'">'+(SUB_CATS[item.cat]||item.cat)+'</span>';
+  if(item.type==='bill')return '<span class="badge cat-'+(item.bcat||'other')+'">'+(BILL_CATS[item.bcat]||item.bcat)+'</span>';
   return '<span class="badge cat-home">'+(MAINT_CATS[item.mcat]||item.mcat)+'</span>';
 }
 function bgItem(item){
-  if(item.type==='sub'){  var m={streaming:'#fceef0',productivity:'#eaf3fb',home:'#f3eefb',other:'#f5ece0'}; return m[item.cat]||m.other; }
-  if(item.type==='bill'){ var m={health:'#eaf6e8',telecom:'#fdf5e0',credit:'#fbeae8',utility:'#fdf5e0',rent:'#f3eefb',tax:'#fceef0',other:'#f5ece0'}; return m[item.bcat]||m.other; }
-  var m={filter:'#eaf3fb',battery:'#fdf5e0',hygiene:'#eaf6e8',appliance:'#f3eefb',car:'#fceef0',other:'#f5ece0'}; return m[item.mcat]||m.other;
+  if(item.type==='sub'){var m={streaming:'#fceef0',productivity:'#eaf3fb',home:'#f3eefb',other:'#f5ece0'};return m[item.cat]||m.other;}
+  if(item.type==='bill'){var m={health:'#eaf6e8',telecom:'#fdf5e0',credit:'#fbeae8',utility:'#fdf5e0',rent:'#f3eefb',tax:'#fceef0',other:'#f5ece0'};return m[item.bcat]||m.other;}
+  var m={filter:'#eaf3fb',battery:'#fdf5e0',hygiene:'#eaf6e8',appliance:'#f3eefb',car:'#fceef0',other:'#f5ece0'};return m[item.mcat]||m.other;
 }
-function stClass(item){ if(item.type==='maint')return 'st-'+maintStatus(item); if(item.type==='bill')return 'st-active'; return 'st-'+(item.status||'active'); }
-function esc(s){ return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
-function pad(n){ return n<10?'0'+n:String(n); }
-function fmt(d){ return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); }
+function stClass(item){if(item.type==='maint')return 'st-'+maintStatus(item);if(item.type==='bill')return 'st-active';return 'st-'+(item.status||'active');}
+function esc(s){return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function pad(n){return n<10?'0'+n:String(n);}
+function fmt(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate());}
 
-// ★ 任務3：計算下一個月同日的日期（自動處理大小月）
-function nextMonthSameDay(dayOfMonth){
-  var today = new Date();
-  var nextY = today.getFullYear(), nextM = today.getMonth() + 1;
-  if(nextM > 11){ nextM = 0; nextY++; }
-  // 取得下個月最後一天
-  var lastDay = new Date(nextY, nextM + 1, 0).getDate();
-  var targetDay = Math.min(dayOfMonth, lastDay);
-  return nextY+'-'+pad(nextM+1)+'-'+pad(targetDay);
-}
-
-// ★ 任務3：繳費完成 → 自動生成下一筆
-window.markBillDone = function(){
-  var item = items.find(function(x){ return x.id===viewId; });
-  if(!item || item.type!=='bill') return;
-  if(!item.isRecurring || !item.dayOfMonth){
-    showToast('此項目未設定「每月自動生成」','warning'); return;
-  }
-  var nextDue = nextMonthSameDay(item.dayOfMonth);
-  var newItem = Object.assign({}, item, {
-    id: Date.now().toString() + '_r',
-    due: nextDue,
-    note: item.note ? item.note : '(自動生成)'
-  });
-  items.push(newItem);
-  saveLocal(); push(); renderAll();
-  closeOv('detOv');
-  toast('bill_done');
-};
-
-// ── TABS ──
-window.switchTab=function(id, el){
-  document.querySelectorAll('.page').forEach(function(p){ p.classList.remove('active'); });
-  document.querySelectorAll('.tab').forEach(function(t){ t.classList.remove('active'); });
-  document.getElementById('page-'+id).classList.add('active');
-  if(el) el.classList.add('active');
-  if(id==='charts') setTimeout(renderCharts, 50);
-};
-
-// ── RENDER ──
-function renderAll(){ renderOverview(); renderSubs(); renderBills(); renderMaint(); renderCalendar(); renderReminders(); }
+function renderAll(){renderOverview();renderSubs();renderBills();renderMaint();renderCalendar();renderReminders();}
 window.renderAll=renderAll;
 
 function renderOverview(){
-  var sm=subMo(), bm=billMo();
-  var act=activeSubs(), bls=bills();
-  var allDue=items.filter(function(i){ var dt=i.type==='maint'?calcDue(i):i.due; return daysUntil(dt)<=7; });
-  var maintDue=maints().filter(function(i){ return maintStatus(i)!=='ok'; });
+  var sm=subMo(),bm=billMo(),act=activeSubs(),bls=bills();
+  var allDue=items.filter(function(i){var dt=i.type==='maint'?calcDue(i):i.due;return daysUntil(dt)<=7;});
+  var maintDue=maints().filter(function(i){return maintStatus(i)!=='ok';});
   document.getElementById('ov-sub').innerHTML='$'+Math.round(sm)+'<small>/月</small>';
   document.getElementById('ov-sub-cnt').textContent=act.length+' 個訂閱中';
   document.getElementById('ov-bill').innerHTML='$'+Math.round(bm)+'<small>/月</small>';
@@ -862,83 +717,76 @@ function renderOverview(){
   document.getElementById('ov-maint').innerHTML=maintDue.length+'<small>項</small>';
   document.getElementById('ov-maint-sub').textContent=maints().length+' 個定期追蹤';
   var dl=document.getElementById('ov-due-list');
-  if(!allDue.length) dl.innerHTML='<div class="empty"><span class="empty-icon">✅</span><p>近7天沒有到期項目，太棒了！</p></div>';
-  else dl.innerHTML=allDue.sort(function(a,b){ var da=a.type==='maint'?calcDue(a):a.due, db=b.type==='maint'?calcDue(b):b.due; return daysUntil(da)-daysUntil(db); }).map(itemCard).join('');
+  if(!allDue.length)dl.innerHTML='<div class="empty"><span class="empty-icon">✅</span><p>近7天沒有到期項目，太棒了！</p></div>';
+  else dl.innerHTML=allDue.sort(function(a,b){var da=a.type==='maint'?calcDue(a):a.due,db=b.type==='maint'?calcDue(b):b.due;return daysUntil(da)-daysUntil(db);}).map(itemCard).join('');
   document.getElementById('ov-sub-list').innerHTML=act.slice(0,4).map(itemCard).join('');
   document.getElementById('ov-bill-list').innerHTML=bls.slice(0,4).map(itemCard).join('');
 }
 
 function renderSubs(){
   var g={active:[],cancel:[],pause:[]};
-  subs().forEach(function(s){ if(g[s.status])g[s.status].push(s); });
-  ['active','cancel','pause'].forEach(function(k){ document.getElementById('list-'+k).innerHTML=g[k].length?g[k].map(itemCard).join(''):'<div class="empty"><p>沒有項目</p></div>'; });
+  subs().forEach(function(s){if(g[s.status])g[s.status].push(s);});
+  ['active','cancel','pause'].forEach(function(k){document.getElementById('list-'+k).innerHTML=g[k].length?g[k].map(itemCard).join(''):'<div class="empty"><p>沒有項目</p></div>';});
 }
 
 function renderBills(){
-  var bs=bills().sort(function(a,b){ return daysUntil(a.due)-daysUntil(b.due); });
+  var bs=bills().sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);});
   document.getElementById('list-bills').innerHTML=bs.length?bs.map(itemCard).join(''):'<div class="empty"><span class="empty-icon">🧾</span><p>還沒有繳費項目</p></div>';
 }
 
 function renderMaint(){
-  var ms=maints().sort(function(a,b){ return daysUntil(calcDue(a))-daysUntil(calcDue(b)); });
+  var ms=maints().sort(function(a,b){return daysUntil(calcDue(a))-daysUntil(calcDue(b));});
   document.getElementById('list-maint').innerHTML=ms.length?ms.map(itemCard).join(''):'<div class="empty"><span class="empty-icon">🔧</span><p>還沒有定期追蹤項目</p></div>';
 }
 
 function itemCard(item){
-  var dt = item.type==='maint'?calcDue(item):item.due;
+  var dt=item.type==='maint'?calcDue(item):item.due;
   var right='';
   if(item.type==='sub'||item.type==='bill'){
     right='<div class="item-right"><div class="item-price">$'+((item.price||0)).toLocaleString()+'</div><div class="item-cycle">/'+(CYCLES[item.cycle]||'月')+'</div></div>';
-  } else {
+  }else{
     var due=calcDue(item);
     right='<div class="item-right"><div class="item-next">'+(due?due.slice(5):'—')+'</div><div class="item-interval">'+(item.interval?item.interval+'天/次':'')+'</div></div>';
   }
-  var prog = item.type==='maint'?'<div class="prog-track"><div class="prog-fill" style="width:'+progPct(item)+'%;background:'+(progPct(item)>=90?'var(--rs)':progPct(item)>=70?'var(--ys)':'var(--gs)')+'"></div></div>':'';
-  // ★ 任務3：定期繳費顯示標籤
-  var recurBadge = (item.type==='bill' && item.isRecurring) ? '<span class="badge-recurring">🔄每月</span>' : '';
-  return '<div class="item-card '+stClass(item)+'" data-id="'+item.id+'" onclick="openDetail(this.dataset.id)">'
+  var prog=item.type==='maint'?'<div class="prog-track"><div class="prog-fill" style="width:'+progPct(item)+'%;background:'+(progPct(item)>=90?'var(--rs)':progPct(item)>=70?'var(--ys)':'var(--gs)')+'"></div></div>':'';
+  return '<div class="item-card '+stClass(item)+'" onclick="openDetail(\''+item.id+'\')">'
     +'<div class="item-icon" style="background:'+bgItem(item)+';cursor:pointer;" onclick="event.stopPropagation();openEmojiPicker(\''+item.id+'\')">'+item.emoji+'</div>'
     +'<div class="item-info"><div class="item-name">'+esc(item.name)+'</div>'
-    +'<div class="item-meta">'+typBadge(item)+' '+catBadge(item)+' '+dueBadge(dt)+' '+recurBadge+'</div>'
+    +'<div class="item-meta">'+typBadge(item)+' '+catBadge(item)+' '+dueBadge(dt)+'</div>'
     +prog+'</div>'+right
     +'<button style="border:none;background:none;font-size:16px;cursor:pointer;padding:4px;color:var(--latte);flex-shrink:0;" onclick="event.stopPropagation();confirmDelete(\''+item.id+'\',\''+esc(item.name)+'\')">🗑️</button>'
     +'</div>';
 }
 
-// ── CALENDAR ──
 function renderCalendar(){
   var mos=['一月','二月','三月','四月','五月','六月','七月','八月','九月','十月','十一月','十二月'];
   document.getElementById('calTitle').textContent=calY+'年 '+mos[calM];
-  var first=new Date(calY,calM,1).getDay(), days=new Date(calY,calM+1,0).getDate();
+  var first=new Date(calY,calM,1).getDay(),days=new Date(calY,calM+1,0).getDate();
   var todayStr=fmt(new Date());
   var evDays={};
   items.forEach(function(item){
-    var dt=item.type==='maint'?calcDue(item):item.due;
-    if(!dt)return;
+    var dt=item.type==='maint'?calcDue(item):item.due;if(!dt)return;
     var d=new Date(dt);
-    if(d.getFullYear()===calY&&d.getMonth()===calM){
-      var dd=d.getDate(); if(!evDays[dd])evDays[dd]=[]; evDays[dd].push(item);
-    }
+    if(d.getFullYear()===calY&&d.getMonth()===calM){var dd=d.getDate();if(!evDays[dd])evDays[dd]=[];evDays[dd].push(item);}
   });
   var h='';
-  for(var i=0;i<first;i++) h+='<div class="cal-day"></div>';
+  for(var i=0;i<first;i++)h+='<div class="cal-day"></div>';
   for(var d=1;d<=days;d++){
-    var ds=calY+'-'+pad(calM+1)+'-'+pad(d), ev=evDays[d]||[], isT=ds===todayStr;
+    var ds=calY+'-'+pad(calM+1)+'-'+pad(d),ev=evDays[d]||[],isT=ds===todayStr;
     h+='<div class="cal-day'+(isT?' today':'')+(ev.length?' has-ev':'')+'">'+d
-      +ev.slice(0,2).map(function(e,i){ return '<div class="ev-dot" style="background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div>'; }).join('')
+      +ev.slice(0,2).map(function(e,i){return '<div class="ev-dot" style="background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div>';}).join('')
       +'</div>';
   }
   document.getElementById('calDays').innerHTML=h;
   var up=items.filter(function(item){
-    var dt=item.type==='maint'?calcDue(item):item.due; if(!dt)return false;
-    var d=new Date(dt); return d.getFullYear()===calY&&d.getMonth()===calM;
-  }).sort(function(a,b){ return new Date(a.type==='maint'?calcDue(a):a.due)-new Date(b.type==='maint'?calcDue(b):b.due); });
+    var dt=item.type==='maint'?calcDue(item):item.due;if(!dt)return false;
+    var d=new Date(dt);return d.getFullYear()===calY&&d.getMonth()===calM;
+  }).sort(function(a,b){return new Date(a.type==='maint'?calcDue(a):a.due)-new Date(b.type==='maint'?calcDue(b):b.due);});
   var el=document.getElementById('evList');
-  if(!up.length){ el.innerHTML='<div class="empty"><span class="empty-icon">🗓️</span><p>本月沒有到期項目</p></div>'; return; }
+  if(!up.length){el.innerHTML='<div class="empty"><span class="empty-icon">🗓️</span><p>本月沒有到期項目</p></div>';return;}
   el.innerHTML=up.map(function(item,i){
-    var dt=item.type==='maint'?calcDue(item):item.due;
-    var d=new Date(dt);
-    return '<div class="ev-item" data-id="'+item.id+'" onclick="openDetail(this.dataset.id)">'
+    var dt=item.type==='maint'?calcDue(item):item.due;var d=new Date(dt);
+    return '<div class="ev-item" onclick="openDetail(\''+item.id+'\')">'
       +'<div class="ev-date">'+d.getDate()+'日</div>'
       +'<div class="ev-bar" style="background:'+CAT_COLORS[i%CAT_COLORS.length]+'"></div>'
       +'<div class="ev-info"><div class="ev-name">'+esc(item.name)+'</div><div class="ev-sub-txt">'+typBadge(item)+' '+catBadge(item)+'</div></div>'
@@ -946,24 +794,23 @@ function renderCalendar(){
       +'</div>';
   }).join('');
 }
-window.shiftMo=function(d){ calM+=d; if(calM<0){calM=11;calY--;} if(calM>11){calM=0;calY++;} renderCalendar(); };
+window.shiftMo=function(d){calM+=d;if(calM<0){calM=11;calY--;}if(calM>11){calM=0;calY++;}renderCalendar();};
 
-// ── CHARTS ──
 function renderCharts(){
   var ca={};
-  activeSubs().forEach(function(s){ ca[s.cat]=(ca[s.cat]||0)+(s.price/(CYC_MO[s.cycle]||1)); });
-  var labs=Object.keys(ca).map(function(c){ return SUB_CATS[c]||c; });
+  activeSubs().forEach(function(s){ca[s.cat]=(ca[s.cat]||0)+(s.price/(CYC_MO[s.cycle]||1));});
+  var labs=Object.keys(ca).map(function(c){return SUB_CATS[c]||c;});
   var data=Object.values(ca);
-  var colors=Object.keys(ca).map(function(_,i){ return CAT_COLORS[i%CAT_COLORS.length]; });
+  var colors=Object.keys(ca).map(function(_,i){return CAT_COLORS[i%CAT_COLORS.length];});
   document.getElementById('pieTotal').textContent='$'+Math.round(subMo());
-  if(pieInst) pieInst.destroy();
+  if(pieInst)pieInst.destroy();
   pieInst=new Chart(document.getElementById('pieChart').getContext('2d'),{
     type:'doughnut',
     data:{labels:labs,datasets:[{data:data,backgroundColor:colors,borderWidth:2,borderColor:'#fdf8f3',hoverOffset:4}]},
     options:{responsive:true,maintainAspectRatio:false,cutout:'62%',plugins:{legend:{display:false},tooltip:{callbacks:{label:function(c){return c.label+': $'+Math.round(c.raw)+'/月';}}}},animation:{duration:600}}
   });
-  document.getElementById('pieLeg').innerHTML=labs.map(function(l,i){ return '<div class="leg-item"><div class="leg-dot" style="background:'+colors[i]+'"></div>'+l+': <b>$'+Math.round(data[i])+'</b></div>'; }).join('');
-  var sorted=[].concat(subs(),bills()).filter(function(s){ return s.price>0; }).sort(function(a,b){ return b.price-a.price; });
+  document.getElementById('pieLeg').innerHTML=labs.map(function(l,i){return '<div class="leg-item"><div class="leg-dot" style="background:'+colors[i]+'"></div>'+l+': <b>$'+Math.round(data[i])+'</b></div>';}).join('');
+  var sorted=[].concat(subs(),bills()).filter(function(s){return s.price>0;}).sort(function(a,b){return b.price-a.price;});
   var mx=sorted.length?sorted[0].price:1;
   document.getElementById('barList').innerHTML=sorted.map(function(s,i){
     return '<div class="bar-row"><div class="bar-lbl">'+s.emoji+' '+esc(s.name)+'</div>'
@@ -972,12 +819,11 @@ function renderCharts(){
   }).join('');
 }
 
-// ── REMINDERS ──
 function remCards(arr){
-  if(!arr.length) return '<div class="empty"><span class="empty-icon">🎉</span><p>14天內沒有到期項目</p></div>';
+  if(!arr.length)return '<div class="empty"><span class="empty-icon">🎉</span><p>14天內沒有到期項目</p></div>';
   return arr.map(function(item){
     var dt=item.type==='maint'?calcDue(item):item.due;
-    var d=daysUntil(dt), cls=d<=3?'bdg-red':d<=7?'bdg-yellow':'bdg-blue';
+    var d=daysUntil(dt),cls=d<=3?'bdg-red':d<=7?'bdg-yellow':'bdg-blue';
     var lbl=d<0?'已逾期 '+Math.abs(d)+'天':d===0?'今天':d+'天後';
     return '<div class="rem-card"><div class="rem-icon">'+item.emoji+'</div>'
       +'<div class="rem-info"><div class="rem-name">'+esc(item.name)+'</div>'
@@ -986,15 +832,14 @@ function remCards(arr){
 }
 function renderReminders(){
   var limit=14;
-  document.getElementById('rem-sub-list').innerHTML=remCards(subs().filter(function(s){ return s.status==='active'&&s.due&&daysUntil(s.due)<=limit; }).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
-  document.getElementById('rem-bill-list').innerHTML=remCards(bills().filter(function(b){ return b.due&&daysUntil(b.due)<=limit; }).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
-  document.getElementById('rem-maint-list').innerHTML=remCards(maints().filter(function(m){ return calcDue(m)&&daysUntil(calcDue(m))<=limit; }).sort(function(a,b){return daysUntil(calcDue(a))-daysUntil(calcDue(b));}));
+  document.getElementById('rem-sub-list').innerHTML=remCards(subs().filter(function(s){return s.status==='active'&&s.due&&daysUntil(s.due)<=limit;}).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
+  document.getElementById('rem-bill-list').innerHTML=remCards(bills().filter(function(b){return b.due&&daysUntil(b.due)<=limit;}).sort(function(a,b){return daysUntil(a.due)-daysUntil(b.due);}));
+  document.getElementById('rem-maint-list').innerHTML=remCards(maints().filter(function(m){return calcDue(m)&&daysUntil(calcDue(m))<=limit;}).sort(function(a,b){return daysUntil(calcDue(a))-daysUntil(calcDue(b));}));
 }
 
-// ── ICS EXPORT ──
 window.exportICS=function(){
-  var exp=items.filter(function(item){ var dt=item.type==='maint'?calcDue(item):item.due; return dt; });
-  if(!exp.length){ showToast('企鵝說：還沒有可匯出的項目喔','warning'); return; }
+  var exp=items.filter(function(item){var dt=item.type==='maint'?calcDue(item):item.due;return dt;});
+  if(!exp.length){showToast('企鵝說：還沒有可匯出的項目喔','warning');return;}
   var ics='BEGIN:VCALENDAR\r\nVERSION:2.0\r\nPRODID:-//家務秘書//TW\r\nCALSCALE:GREGORIAN\r\n';
   exp.forEach(function(item){
     var dt=(item.type==='maint'?calcDue(item):item.due).replace(/-/g,'');
@@ -1004,22 +849,21 @@ window.exportICS=function(){
   ics+='END:VCALENDAR';
   var a=document.createElement('a');
   a.href='data:text/calendar;charset=utf-8,'+encodeURIComponent(ics);
-  a.download='家務秘書行事曆.ics'; a.click();
+  a.download='家務秘書行事曆.ics';a.click();
   toast('ics');
 };
 
-// ── ADD/EDIT ──
 var curEmojis=SUB_EMOJIS;
 function initEmojiRow(){
   curEmojis=selType==='bill'?BILL_EMOJIS:selType==='maint'?MAINT_EMOJIS:SUB_EMOJIS;
-  if(curEmojis.indexOf(selEmoji)<0) selEmoji=curEmojis[0];
-  document.getElementById('emojiRow').innerHTML=curEmojis.map(function(e){ return '<div class="ep'+(e===selEmoji?' sel':'')+'" onclick="pickE(\''+e+'\')">'+e+'</div>'; }).join('');
+  if(curEmojis.indexOf(selEmoji)<0)selEmoji=curEmojis[0];
+  document.getElementById('emojiRow').innerHTML=curEmojis.map(function(e){return '<div class="ep'+(e===selEmoji?' sel':'')+'" onclick="pickE(\''+e+'\')">'+e+'</div>';}).join('');
 }
-window.pickE=function(e){ selEmoji=e; document.querySelectorAll('.ep').forEach(function(el){ el.classList.toggle('sel',el.textContent===e); }); };
+window.pickE=function(e){selEmoji=e;document.querySelectorAll('.ep').forEach(function(el){el.classList.toggle('sel',el.textContent===e);});};
 
 function setType(t){
   selType=t;
-  ['Sub','Bill','Maint'].forEach(function(k){ document.getElementById('typeBtn'+k).classList.toggle('sel',k.toLowerCase()===t); });
+  ['sub','bill','maint'].forEach(function(k){document.getElementById('typeBtn'+k.charAt(0).toUpperCase()+k.slice(1)).classList.toggle('sel',k===t);});
   document.getElementById('sub-fields').style.display=t==='sub'?'':'none';
   document.getElementById('bill-fields').style.display=t==='bill'?'':'none';
   document.getElementById('maint-fields').style.display=t==='maint'?'':'none';
@@ -1029,29 +873,27 @@ function setType(t){
 window.setType=setType;
 
 window.openAdd=function(){
-  editId=null; selType='sub'; selEmoji='💳';
+  editId=null;selType='sub';selEmoji='💳';
   document.getElementById('modalTitle').textContent='✨ 新增項目';
   document.getElementById('typeToggle').style.display='';
   setType('sub');
-  ['f-name','f-note','f-price','f-bprice','f-interval','f-mcost','f-dayofmonth'].forEach(function(id){ var el=document.getElementById(id); if(el) el.value=''; });
-  ['f-due','f-bdue','f-last','f-mdue'].forEach(function(id){ document.getElementById(id).value=''; });
+  ['f-name','f-note','f-price','f-bprice','f-interval','f-mcost'].forEach(function(id){document.getElementById(id).value='';});
+  ['f-due','f-bdue','f-last','f-mdue'].forEach(function(id){document.getElementById(id).value='';});
   document.getElementById('f-cycle').value='monthly';
   document.getElementById('f-bcycle').value='monthly';
   document.getElementById('f-cat').value='streaming';
   document.getElementById('f-status').value='active';
   document.getElementById('f-bcat').value='health';
   document.getElementById('f-bremind').value='3';
+  document.getElementById('f-brecurring').value='';
   document.getElementById('f-mcat').value='filter';
-  document.getElementById('f-recurring').checked=false;
-  document.getElementById('recurring-day-field').style.display='none';
   document.getElementById('delBtn').style.display='none';
   document.getElementById('addOv').classList.add('show');
-  setTimeout(function(){ document.getElementById('addOv').querySelector('.modal').scrollTop=0; },50);
 };
 
 function openEdit(id){
-  var item=items.find(function(x){ return x.id===id; }); if(!item) return;
-  editId=id; selType=item.type; selEmoji=item.emoji||'💳';
+  var item=items.find(function(x){return x.id===id;});if(!item)return;
+  editId=id;selType=item.type;selEmoji=item.emoji||'💳';
   document.getElementById('modalTitle').textContent='✏️ 編輯';
   document.getElementById('typeToggle').style.display='none';
   setType(item.type);
@@ -1063,18 +905,14 @@ function openEdit(id){
     document.getElementById('f-cat').value=item.cat||'other';
     document.getElementById('f-status').value=item.status||'active';
     document.getElementById('f-due').value=item.due||'';
-  } else if(item.type==='bill'){
+  }else if(item.type==='bill'){
     document.getElementById('f-bprice').value=item.price||0;
     document.getElementById('f-bcycle').value=item.cycle||'monthly';
     document.getElementById('f-bcat').value=item.bcat||'other';
     document.getElementById('f-bdue').value=item.due||'';
     document.getElementById('f-bremind').value=item.remind||'3';
-    // ★ 任務3：載入定期繳費設定
-    var isRec = item.isRecurring||false;
-    document.getElementById('f-recurring').checked=isRec;
-    document.getElementById('recurring-day-field').style.display=isRec?'':'none';
-    document.getElementById('f-dayofmonth').value=item.dayOfMonth||'';
-  } else {
+    document.getElementById('f-brecurring').value=item.brecurring||'';
+  }else{
     document.getElementById('f-last').value=item.lastDate||'';
     document.getElementById('f-interval').value=item.interval||'';
     document.getElementById('f-mcost').value=item.cost||'';
@@ -1083,12 +921,11 @@ function openEdit(id){
   }
   document.getElementById('delBtn').style.display='block';
   document.getElementById('addOv').classList.add('show');
-  setTimeout(function(){ document.getElementById('addOv').querySelector('.modal').scrollTop=0; },50);
 }
 
 window.doSave=function(){
   var name=document.getElementById('f-name').value.trim();
-  if(!name){ toast('warn'); return; }
+  if(!name){toast('warn');return;}
   var item;
   if(selType==='sub'){
     item={id:editId||Date.now().toString(),type:'sub',name:name,emoji:selEmoji,
@@ -1096,159 +933,190 @@ window.doSave=function(){
       cycle:document.getElementById('f-cycle').value,cat:document.getElementById('f-cat').value,
       status:document.getElementById('f-status').value,due:document.getElementById('f-due').value,
       note:document.getElementById('f-note').value};
-  } else if(selType==='bill'){
-    // ★ 任務3：儲存 isRecurring + dayOfMonth
-    var isRec = document.getElementById('f-recurring').checked;
-    var dom = parseInt(document.getElementById('f-dayofmonth').value)||null;
+  }else if(selType==='bill'){
     item={id:editId||Date.now().toString(),type:'bill',name:name,emoji:selEmoji,
       price:parseInt(document.getElementById('f-bprice').value)||0,
       cycle:document.getElementById('f-bcycle').value,bcat:document.getElementById('f-bcat').value,
-      due:document.getElementById('f-bdue').value,remind:parseInt(document.getElementById('f-bremind').value)||3,
-      isRecurring:isRec,dayOfMonth:isRec?dom:null,
+      due:document.getElementById('f-bdue').value,
+      remind:parseInt(document.getElementById('f-bremind').value)||3,
+      brecurring:document.getElementById('f-brecurring').value,
       note:document.getElementById('f-note').value};
-  } else {
+  }else{
     var lastDate=document.getElementById('f-last').value;
     var interval=parseInt(document.getElementById('f-interval').value)||0;
     var mdue=document.getElementById('f-mdue').value;
-    if(!mdue&&lastDate&&interval){ var d=new Date(lastDate); d.setDate(d.getDate()+interval); mdue=d.toISOString().slice(0,10); }
+    if(!mdue&&lastDate&&interval){var d=new Date(lastDate);d.setDate(d.getDate()+interval);mdue=d.toISOString().slice(0,10);}
     item={id:editId||Date.now().toString(),type:'maint',name:name,emoji:selEmoji,
-      mcat:document.getElementById('f-mcat').value,lastDate:lastDate,interval:interval,
-      cost:parseInt(document.getElementById('f-mcost').value)||0,due:mdue,
-      note:document.getElementById('f-note').value};
+      mcat:document.getElementById('f-mcat').value,
+      lastDate:lastDate,interval:interval,cost:parseInt(document.getElementById('f-mcost').value)||0,
+      due:mdue,note:document.getElementById('f-note').value};
   }
-  if(editId){ var idx=items.findIndex(function(x){ return x.id===editId; }); if(idx>-1) items[idx]=item; else items.push(item); toast('update'); }
-  else{ items.push(item); toast('add'); }
-  saveLocal(); push(); renderAll(); closeOv('addOv');
+  if(editId){
+    var idx=items.findIndex(function(x){return x.id===editId;});
+    if(idx>-1)items[idx]=item;
+    toast('update');
+  }else{
+    items.push(item);toast('add');
+  }
+  closeOv('addOv');saveLocal();push();renderAll();
 };
 
-// ── DETAIL MODAL ──
-window.openDetail=function(id){
-  var item=items.find(function(x){ return x.id===id; }); if(!item) return;
+window.doDelete=function(){
+  if(!editId)return;
+  var item=items.find(function(x){return x.id===editId;});
+  if(!item)return;
+  secConfirmCb=function(){
+    items=items.filter(function(x){return x.id!==editId;});
+    closeOv('addOv');saveLocal();push();renderAll();toast('del');
+  };
+  document.getElementById('secConfirmMsg').textContent='「'+item.name+'」';
+  document.getElementById('secConfirmOv').classList.add('show');
+};
+
+window.confirmDelete=function(id,name){
+  secConfirmCb=function(){
+    items=items.filter(function(x){return x.id!==id;});
+    saveLocal();push();renderAll();toast('del');
+  };
+  document.getElementById('secConfirmMsg').textContent='「'+name+'」';
+  document.getElementById('secConfirmOv').classList.add('show');
+};
+window.secConfirmCancel=function(){document.getElementById('secConfirmOv').classList.remove('show');secConfirmCb=null;};
+window.secConfirmOk=function(){document.getElementById('secConfirmOv').classList.remove('show');if(secConfirmCb)secConfirmCb();secConfirmCb=null;};
+
+function openDetail(id){
   viewId=id;
-  var bg=bgItem(item);
+  var item=items.find(function(x){return x.id===id;});if(!item)return;
   document.getElementById('d-icon').textContent=item.emoji;
-  document.getElementById('d-icon').style.background=bg;
+  document.getElementById('d-icon').style.background=bgItem(item);
   document.getElementById('d-name').textContent=item.name;
   document.getElementById('d-cat').innerHTML=typBadge(item)+' '+catBadge(item);
-
-  // 訂閱狀態列 / 汰換完成按鈕 / 繳費完成按鈕
   var stRow=document.getElementById('d-st-row');
   var doneBtn=document.getElementById('d-done-btn');
-  var billDoneBtn=document.getElementById('d-bill-done-btn');
   if(item.type==='sub'){
-    stRow.style.display='';
-    doneBtn.style.display='none';
-    billDoneBtn.style.display='none';
-    document.querySelectorAll('.st-pick').forEach(function(b){ b.className='st-pick'; if(b.dataset.st===item.status) b.classList.add('cur-'+item.status); });
-  } else if(item.type==='maint'){
+    stRow.style.display='flex';doneBtn.style.display='none';
+    stRow.querySelectorAll('.st-pick').forEach(function(b){
+      b.className='st-pick'+(b.getAttribute('data-st')===item.status?' cur-'+item.status:'');
+    });
+  }else if(item.type==='bill'){
     stRow.style.display='none';
-    doneBtn.style.display='';
-    billDoneBtn.style.display='none';
-  } else {
-    // bill
-    stRow.style.display='none';
-    doneBtn.style.display='none';
-    // ★ 只有設定 isRecurring 的才顯示繳費完成按鈕
-    billDoneBtn.style.display = item.isRecurring ? '' : 'none';
-    billDoneBtn.textContent = item.isRecurring
-      ? '✅ 已繳費！自動生成下期（'+nextMonthSameDay(item.dayOfMonth)+'）'
-      : '';
+    // Task 3: 如果有 brecurring，顯示「已繳」按鈕
+    doneBtn.style.display='block';
+    doneBtn.textContent='✅ 已繳！自動更新下次繳費日';
+  }else{
+    stRow.style.display='none';doneBtn.style.display='block';
+    doneBtn.textContent='✅ 已更換！今天起重新計時';
   }
-
-  // 詳細資訊列
-  var rows=[];
   var dt=item.type==='maint'?calcDue(item):item.due;
-  rows.push({k:'到期日', v:dt||'—'});
+  var rows='';
   if(item.type==='sub'||item.type==='bill'){
-    rows.push({k:'金額', v:'$'+(item.price||0).toLocaleString()+'/'+(CYCLES[item.cycle]||'月')});
+    rows+='<div class="det-row"><div class="det-k">金額</div><div class="det-v">$'+(item.price||0).toLocaleString()+'/'+(CYCLES[item.cycle]||'月')+'</div></div>';
+    rows+='<div class="det-row"><div class="det-k">下次繳費日</div><div class="det-v">'+(dt||'—')+'</div></div>';
+    if(item.type==='bill'&&item.brecurring)rows+='<div class="det-row"><div class="det-k">每月自動日期</div><div class="det-v">'+( item.brecurring==='last'?'每月最後一天':'每月 '+item.brecurring+' 日')+'</div></div>';
+  }else{
+    rows+='<div class="det-row"><div class="det-k">上次更換</div><div class="det-v">'+(item.lastDate||'—')+'</div></div>';
+    rows+='<div class="det-row"><div class="det-k">週期</div><div class="det-v">'+(item.interval?item.interval+' 天':'—')+'</div></div>';
+    rows+='<div class="det-row"><div class="det-k">下次到期</div><div class="det-v">'+(dt||'—')+'</div></div>';
   }
-  if(item.type==='maint'){
-    rows.push({k:'上次更換', v:item.lastDate||'—'});
-    rows.push({k:'週期', v:(item.interval||'?')+'天'});
-    rows.push({k:'進度', v:progPct(item)+'%'});
-    if(item.cost) rows.push({k:'費用', v:'$'+item.cost});
-  }
-  // ★ 任務3：顯示定期繳費資訊
-  if(item.type==='bill' && item.isRecurring){
-    rows.push({k:'自動生成', v:'每月 '+item.dayOfMonth+' 日'});
-  }
-  if(item.note) rows.push({k:'備註', v:item.note});
-  document.getElementById('d-rows').innerHTML=rows.map(function(r){ return '<div class="det-row"><div class="det-k">'+r.k+'</div><div class="det-v">'+esc(String(r.v))+'</div></div>'; }).join('');
+  if(item.note)rows+='<div class="det-row"><div class="det-k">備註</div><div class="det-v">'+esc(item.note)+'</div></div>';
+  document.getElementById('d-rows').innerHTML=rows;
   document.getElementById('detOv').classList.add('show');
-};
+}
+window.openDetail=openDetail;
 
-// ── MAINT DONE ──
-window.markDone=function(){
-  var item=items.find(function(x){ return x.id===viewId; }); if(!item||item.type!=='maint') return;
-  item.lastDate=fmt(new Date());
-  if(item.interval){ var d=new Date(); d.setDate(d.getDate()+parseInt(item.interval)); item.due=fmt(d); }
-  saveLocal(); push(); renderAll(); closeOv('detOv'); toast('done');
-};
-
-// ── STATUS ──
 window.setStatus=function(st){
-  var item=items.find(function(x){ return x.id===viewId; }); if(!item) return;
+  if(!viewId)return;
+  var item=items.find(function(x){return x.id===viewId;});if(!item||item.type!=='sub')return;
   item.status=st;
-  document.querySelectorAll('.st-pick').forEach(function(b){ b.className='st-pick'; if(b.dataset.st===st) b.classList.add('cur-'+st); });
-  saveLocal(); push(); renderAll(); toast('status');
+  document.getElementById('d-st-row').querySelectorAll('.st-pick').forEach(function(b){
+    b.className='st-pick'+(b.getAttribute('data-st')===st?' cur-'+st:'');
+  });
+  saveLocal();push();renderAll();toast('status');
 };
 
-// ── EMOJI PICKER ──
+// Task 3: markDone — 繳費自動產生下個月日期
+window.markDone=function(){
+  if(!viewId)return;
+  var item=items.find(function(x){return x.id===viewId;});if(!item)return;
+  if(item.type==='maint'){
+    item.lastDate=fmt(new Date());
+    if(item.interval){var d=new Date();d.setDate(d.getDate()+parseInt(item.interval));item.due=fmt(d);}
+    toast('done');
+  }else if(item.type==='bill'){
+    var rec=item.brecurring;
+    if(rec){
+      var today=new Date();
+      var nextY=today.getFullYear(),nextM=today.getMonth()+1;
+      if(nextM>11){nextM=0;nextY++;}
+      var day;
+      if(rec==='last'){
+        day=new Date(nextY,nextM+1,0).getDate();
+      }else{
+        day=parseInt(rec);
+        var maxDay=new Date(nextY,nextM+1,0).getDate();
+        if(day>maxDay)day=maxDay;
+      }
+      item.due=nextY+'-'+pad(nextM+1)+'-'+pad(day);
+      showToast('下個月 '+pad(nextM+1)+'/'+pad(day)+' 已自動設好 ♻️','success');
+    }else{
+      toast('done');
+    }
+  }
+  saveLocal();push();renderAll();
+  closeOv('detOv');
+};
+
+window.editFromDetail=function(){if(viewId){closeOv('detOv');openEdit(viewId);}};
+
+var emojiPickTarget=null;
 window.openEmojiPicker=function(id){
-  emojiPickTargetId=id;
-  var item=items.find(function(x){ return x.id===id; });
-  var cur=item?item.emoji:'💳';
-  document.getElementById('emojiPreview').textContent=cur;
-  document.getElementById('emojiInput').value=cur;
+  emojiPickTarget=id;
+  var item=items.find(function(x){return x.id===id;});
+  if(item){
+    document.getElementById('emojiPreview').textContent=item.emoji||'💳';
+    document.getElementById('emojiInput').value='';
+  }
   document.getElementById('emojiPickOv').classList.add('show');
 };
-window.previewEmoji=function(v){ if(v) document.getElementById('emojiPreview').textContent=v; };
+window.previewEmoji=function(v){
+  var e=Array.from(v.trim())[0];
+  if(e)document.getElementById('emojiPreview').textContent=e;
+};
 window.confirmEmojiPick=function(){
-  var val=document.getElementById('emojiInput').value.trim();
-  if(!val){ closeOv('emojiPickOv'); return; }
-  if(emojiPickTargetId){
-    var item=items.find(function(x){ return x.id===emojiPickTargetId; });
-    if(item){ item.emoji=val; saveLocal(); push(); renderAll(); }
-  } else {
-    selEmoji=val; initEmojiRow();
+  var v=document.getElementById('emojiInput').value.trim();
+  var e=Array.from(v)[0];
+  if(e&&emojiPickTarget){
+    var item=items.find(function(x){return x.id===emojiPickTarget;});
+    if(item){item.emoji=e;saveLocal();push();renderAll();}
   }
   closeOv('emojiPickOv');
 };
 
-// ── EDIT FROM DETAIL ──
-window.editFromDetail=function(){ var id=viewId; closeOv('detOv'); setTimeout(function(){ openEdit(id); },150); };
+function switchTab(name,el){
+  document.querySelectorAll('.page').forEach(function(p){p.classList.remove('active');});
+  document.querySelectorAll('.tab').forEach(function(t){t.classList.remove('active');});
+  var pg=document.getElementById('page-'+name);if(pg)pg.classList.add('active');
+  if(el)el.classList.add('active');
+  if(name==='charts')renderCharts();
+}
+window.switchTab=switchTab;
 
-// ── DELETE ──
-var secConfirmCb=null;
-window.confirmDelete=function(id,name){
-  secConfirmCb=function(){ var idx=items.findIndex(function(x){ return x.id===id; }); if(idx>-1){ items.splice(idx,1); saveLocal(); push(); renderAll(); toast('del'); } };
-  document.getElementById('secConfirmMsg').textContent='"'+name+'" 將會永久刪除';
-  document.getElementById('secConfirmOv').classList.add('show');
-};
-window.secConfirmOk=function(){ if(secConfirmCb)secConfirmCb(); secConfirmCb=null; closeOv('secConfirmOv'); };
-window.secConfirmCancel=function(){ secConfirmCb=null; closeOv('secConfirmOv'); };
+function showOv(id){document.getElementById(id).classList.add('show');}
+function closeOv(id){document.getElementById(id).classList.remove('show');}
+window.closeOv=closeOv;
+function maybeClose(e,id){if(e.target===document.getElementById(id))closeOv(id);}
+window.maybeClose=maybeClose;
 
-window.doDelete=function(){
-  if(!editId) return;
-  var id=editId;
-  closeOv('addOv');
-  var item=items.find(function(x){ return x.id===id; });
-  confirmDelete(id, item?item.name:'此項目');
-};
-
-// ── MODAL UTILS ──
-window.closeOv=function(id){ document.getElementById(id).classList.remove('show'); };
-window.maybeClose=function(e,id){ if(e.target===document.getElementById(id)) closeOv(id); };
-
-// ── INIT ──
-(function(){
-  var saved=localStorage.getItem('hsec_last_room');
-  var params=new URLSearchParams(location.search);
-  var urlCode=params.get('code');
-  var code=urlCode||saved;
-  if(code){ roomCode=code.toLowerCase(); enterApp(); }
-  else{ document.getElementById('loginScreen').style.display='flex'; }
-})();
+// ── URL code 自動登入 ──
+var saved=localStorage.getItem('hsec_last_room');
+var params=new URLSearchParams(location.search);
+var urlCode=params.get('code');
+var initCode=urlCode||saved;
+if(initCode){
+  roomCode=initCode.toLowerCase().trim();
+  document.getElementById('roomInput').value=roomCode;
+  enterApp();
+}
 </script>
 </body>
 </html>
