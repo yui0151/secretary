@@ -397,7 +397,7 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="sub-fields">
     <div class="field-2">
       <div class="field"><label>金額 (NT$)</label><input id="f-price" type="number" placeholder="0"></div>
-      <div class="field"><label>週期</label><select id="f-cycle"><option value="monthly">每月</option><option value="yearly">每年</option><option value="quarterly">每季</option><option value="onetime">一次性</option></select></div>
+      <div class="field"><label>週期</label><select id="f-cycle"><option value="monthly">每月</option><option value="bimonthly">每兩個月</option><option value="quarterly">每季</option><option value="yearly">每年</option><option value="onetime">一次性</option></select></div>
     </div>
     <div class="field-2">
       <div class="field"><label>分類</label><select id="f-cat"><option value="streaming">影音串流</option><option value="productivity">生產力工具</option><option value="home">家用服務</option><option value="other">其他</option></select></div>
@@ -429,9 +429,24 @@ body::before{content:'';position:fixed;inset:0;background:radial-gradient(ellips
   <div id="maint-fields" style="display:none;">
     <div class="field-2">
       <div class="field"><label>上次更換日</label><input id="f-last" type="date"></div>
-      <div class="field"><label>週期（天）</label><input id="f-interval" type="number" placeholder="例：90"></div>
+      <div class="field"><label>週期</label>
+        <select id="f-interval">
+          <option value="7">每週（7天）</option>
+          <option value="14">每兩週（14天）</option>
+          <option value="30">每月（30天）</option>
+          <option value="60">每兩個月（60天）</option>
+          <option value="90">每季（90天）</option>
+          <option value="180">每半年（180天）</option>
+          <option value="365">每年（365天）</option>
+          <option value="custom">自訂天數…</option>
+        </select>
+      </div>
     </div>
-    <div class="field"><label>下次到期日（可覆蓋）</label><input id="f-mdue" type="date"></div>
+    <div class="field" id="f-interval-custom-wrap" style="display:none;">
+      <label>自訂天數</label>
+      <input id="f-interval-custom" type="number" placeholder="例：45" min="1">
+    </div>
+    <div class="field"><label>下次到期日（自動計算，可覆蓋）</label><input id="f-mdue" type="date"></div>
     <div class="field-2">
       <div class="field"><label>費用（選填）</label><input id="f-mcost" type="number" placeholder="0"></div>
       <div class="field"><label>分類</label><select id="f-mcat"><option value="filter">濾芯/濾材</option><option value="battery">電池</option><option value="hygiene">衛生用品</option><option value="appliance">家電耗材</option><option value="car">汽車保養</option><option value="other">其他</option></select></div>
@@ -872,13 +887,50 @@ function setType(t){
 }
 window.setType=setType;
 
+// ── 家務維護週期 select 邏輯 ──
+(function(){
+  function getIntervalDays(){
+    var sel = document.getElementById('f-interval');
+    if(!sel) return 0;
+    if(sel.value === 'custom') return parseInt(document.getElementById('f-interval-custom').value)||0;
+    return parseInt(sel.value)||0;
+  }
+  function autoCalcDue(){
+    var lastDate = document.getElementById('f-last').value;
+    var interval = getIntervalDays();
+    if(lastDate && interval){
+      var d = new Date(lastDate);
+      d.setDate(d.getDate() + interval);
+      document.getElementById('f-mdue').value = d.toISOString().slice(0,10);
+    }
+  }
+  document.addEventListener('change', function(e){
+    if(e.target.id === 'f-interval'){
+      var isCustom = e.target.value === 'custom';
+      document.getElementById('f-interval-custom-wrap').style.display = isCustom ? '' : 'none';
+      if(!isCustom) autoCalcDue();
+    }
+    if(e.target.id === 'f-interval-custom' || e.target.id === 'f-last'){
+      autoCalcDue();
+    }
+  });
+  document.addEventListener('input', function(e){
+    if(e.target.id === 'f-interval-custom' || e.target.id === 'f-last'){
+      autoCalcDue();
+    }
+  });
+})();
+
 window.openAdd=function(){
   editId=null;selType='sub';selEmoji='💳';
   document.getElementById('modalTitle').textContent='✨ 新增項目';
   document.getElementById('typeToggle').style.display='';
   setType('sub');
-  ['f-name','f-note','f-price','f-bprice','f-interval','f-mcost'].forEach(function(id){document.getElementById(id).value='';});
+  ['f-name','f-note','f-price','f-bprice','f-mcost'].forEach(function(id){document.getElementById(id).value='';});
   ['f-due','f-bdue','f-last','f-mdue'].forEach(function(id){document.getElementById(id).value='';});
+  document.getElementById('f-interval').value='30';
+  document.getElementById('f-interval-custom').value='';
+  document.getElementById('f-interval-custom-wrap').style.display='none';
   document.getElementById('f-cycle').value='monthly';
   document.getElementById('f-bcycle').value='monthly';
   document.getElementById('f-cat').value='streaming';
@@ -913,8 +965,19 @@ function openEdit(id){
     document.getElementById('f-bremind').value=item.remind||'3';
     document.getElementById('f-brecurring').value=item.brecurring||'';
   }else{
+    var iv = item.interval || 30;
+    var ivStr = String(iv);
+    var sel = document.getElementById('f-interval');
+    var validOpts = ['7','14','30','60','90','180','365'];
+    if(validOpts.includes(ivStr)){
+      sel.value = ivStr;
+      document.getElementById('f-interval-custom-wrap').style.display='none';
+    } else {
+      sel.value = 'custom';
+      document.getElementById('f-interval-custom-wrap').style.display='';
+      document.getElementById('f-interval-custom').value = iv;
+    }
     document.getElementById('f-last').value=item.lastDate||'';
-    document.getElementById('f-interval').value=item.interval||'';
     document.getElementById('f-mcost').value=item.cost||'';
     document.getElementById('f-mcat').value=item.mcat||'other';
     document.getElementById('f-mdue').value=item.due||'';
@@ -943,9 +1006,17 @@ window.doSave=function(){
       note:document.getElementById('f-note').value};
   }else{
     var lastDate=document.getElementById('f-last').value;
-    var interval=parseInt(document.getElementById('f-interval').value)||0;
+    var ivSel = document.getElementById('f-interval').value;
+    var interval = ivSel === 'custom'
+      ? (parseInt(document.getElementById('f-interval-custom').value)||0)
+      : (parseInt(ivSel)||30);
     var mdue=document.getElementById('f-mdue').value;
-    if(!mdue&&lastDate&&interval){var d=new Date(lastDate);d.setDate(d.getDate()+interval);mdue=d.toISOString().slice(0,10);}
+    // 自動計算截止日：正確處理大小月偏移
+    if(!mdue && lastDate && interval){
+      var d = new Date(lastDate);
+      d.setDate(d.getDate() + interval);
+      mdue = d.toISOString().slice(0,10);
+    }
     item={id:editId||Date.now().toString(),type:'maint',name:name,emoji:selEmoji,
       mcat:document.getElementById('f-mcat').value,
       lastDate:lastDate,interval:interval,cost:parseInt(document.getElementById('f-mcost').value)||0,
@@ -1034,30 +1105,67 @@ window.setStatus=function(st){
   saveLocal();push();renderAll();toast('status');
 };
 
-// Task 3: markDone — 繳費自動產生下個月日期
+// markDone — 完成後自動計算下次截止日（正確處理大小月）
 window.markDone=function(){
   if(!viewId)return;
   var item=items.find(function(x){return x.id===viewId;});if(!item)return;
+
+  // 工具：安全地加月份（自動 clamp 大小月，不溢出）
+  function addMonths(dateStr, months){
+    var d=new Date(dateStr||fmt(new Date()));
+    var targetMonth=d.getMonth()+months;
+    var targetYear=d.getFullYear()+Math.floor(targetMonth/12);
+    targetMonth=((targetMonth%12)+12)%12;
+    // 取目標月最後一天作為 clamp
+    var maxDay=new Date(targetYear,targetMonth+1,0).getDate();
+    var day=Math.min(d.getDate(),maxDay);
+    return targetYear+'-'+pad(targetMonth+1)+'-'+pad(day);
+  }
+
   if(item.type==='maint'){
+    // 汰換任務：今天為新的「上次更換日」，依 interval 天數算下次
     item.lastDate=fmt(new Date());
-    if(item.interval){var d=new Date();d.setDate(d.getDate()+parseInt(item.interval));item.due=fmt(d);}
+    if(item.interval){
+      var d=new Date();
+      d.setDate(d.getDate()+parseInt(item.interval));
+      item.due=fmt(d);
+    }
     toast('done');
   }else if(item.type==='bill'){
     var rec=item.brecurring;
     if(rec){
+      // 有固定日期設定：算「下個月的指定日」
       var today=new Date();
-      var nextY=today.getFullYear(),nextM=today.getMonth()+1;
-      if(nextM>11){nextM=0;nextY++;}
+      var nextMonth=today.getMonth()+1;
+      var nextYear=today.getFullYear();
+      if(nextMonth>11){nextMonth=0;nextYear++;}
       var day;
       if(rec==='last'){
-        day=new Date(nextY,nextM+1,0).getDate();
+        day=new Date(nextYear,nextMonth+1,0).getDate();
       }else{
         day=parseInt(rec);
-        var maxDay=new Date(nextY,nextM+1,0).getDate();
+        var maxDay=new Date(nextYear,nextMonth+1,0).getDate();
         if(day>maxDay)day=maxDay;
       }
-      item.due=nextY+'-'+pad(nextM+1)+'-'+pad(day);
-      showToast('下個月 '+pad(nextM+1)+'/'+pad(day)+' 已自動設好 ♻️','success');
+      item.due=nextYear+'-'+pad(nextMonth+1)+'-'+pad(day);
+      showToast('已完成！下次繳費日：'+pad(nextMonth+1)+'/'+pad(day)+' ♻️','success');
+    }else{
+      // 無固定日：依週期月數從今天往後推（正確 clamp）
+      var cycMo=CYC_MO[item.cycle]||1;
+      if(cycMo>0){
+        var base=item.due||fmt(new Date());
+        item.due=addMonths(base,cycMo);
+        showToast('下次到期日已更新 → '+item.due+' ♻️','success');
+      }else{
+        toast('done');
+      }
+    }
+  }else if(item.type==='sub'){
+    // 訂閱完成：依週期月數從目前 due 往後推
+    var cycMo=CYC_MO[item.cycle]||1;
+    if(cycMo>0&&item.due){
+      item.due=addMonths(item.due,cycMo);
+      showToast('下次訂閱日已更新 → '+item.due+' ♻️','success');
     }else{
       toast('done');
     }
